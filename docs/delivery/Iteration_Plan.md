@@ -1,6 +1,6 @@
 # Release 与迭代计划
 
-**文档版本:** 2.0
+**文档版本:** 2.1
 **首次编写日期:** 2026-05-17
 **最近更新日期:** 2026-05-20
 **当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个专业、优美、易用、可转化的客户网站样板，并用轻量后台支撑线索跟进闭环。
@@ -63,7 +63,7 @@ Review 使用统一状态：
 | R0.4 Industry Pack | M0.4 First Industry Pack: HVAC | I0.4.1 | Completed | 用 HVAC 样板验证行业包复用。 |
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
 | R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | In Progress | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
-| R0.7 Website Experience System | M0.7 Customer Website Quality | I0.7.1-I0.7.4 | Planned | 将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
+| R0.7 Website Experience System | M0.7 Multipage Customer Website Quality | I0.7.1-I0.7.5 | Planned | 基于多页面高保真原型，将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
 | R0.8 Operator Simplicity | M0.8 Lead Inbox Lite | I0.8.1-I0.8.3 | Planned | 做最小 owner 跟进工具，不做复杂 CRM。 |
 | R0.9 Launch Trust | M0.9 Production Launch | I0.9.1-I0.9.3 | Planned | 完成通知、安全、部署、备份和 staging smoke，让样板网站可上线。 |
 
@@ -367,61 +367,89 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 ### M0.7 Customer Website Quality
 
-**目标:** 把 Dandelion 官网从“功能可演示”升级为“客户愿意购买的专业网站样板”，并沉淀可复用的网站体验标准。
+**目标:** 把 Dandelion 官网从“功能可演示”升级为“客户愿意购买的专业多页面网站样板”，并沉淀可复用的网站体验标准。
 **状态:** Planned
-**建议开发方式:** 可以让架构师和设计/前端 agent 一次性开发 I0.7.1-I0.7.4，但 review 必须按视觉系统、页面体验、移动端、表单体验四个 slice 验收。
+**设计基线:** `docs/product/prototypes/dandelion-multipage/index.html` 及同目录多页面原型。
+**建议开发方式:** 可以让架构师和设计/前端 agent 一次性开发 I0.7.1-I0.7.5，但 review 必须按视觉系统、真实页面结构、行业样板、Demo/Pricing、移动端/表单体验五个 slice 验收。
 **设计原则:** 不和大型 SaaS 拼功能，优先做到像优秀 Google Docs 一样简单、清楚、顺畅。
+
+**页面映射:**
+
+| 原型文件 | 目标代码页面 | 页面职责 |
+| --- | --- | --- |
+| `prototypes/dandelion-multipage/index.html` | `clients/dandelion/frontend/app/page.tsx` | Home：定位、信任、核心闭环、行业入口 |
+| `prototypes/dandelion-multipage/services.html` | `clients/dandelion/frontend/app/services/page.tsx` | Services：服务内容和 Own/Integrate/Avoid 边界 |
+| `prototypes/dandelion-multipage/industries.html` | `clients/dandelion/frontend/app/industries/page.tsx` | Industries：行业入口和行业化复用逻辑 |
+| `prototypes/dandelion-multipage/hvac.html` | `clients/dandelion/frontend/app/industries/hvac/page.tsx` | HVAC：第一个可销售行业网站样板 |
+| `prototypes/dandelion-multipage/demo.html` | `clients/dandelion/frontend/app/demo/page.tsx` | Demo：visitor view 到 owner follow-up 的闭环 |
+| `prototypes/dandelion-multipage/pricing.html` | `clients/dandelion/frontend/app/pricing/page.tsx` | Pricing：简化套餐选择，引导 audit |
+| `prototypes/dandelion-multipage/audit.html` | `clients/dandelion/frontend/app/page.tsx#audit` 或独立 audit route | Audit：独立转化流程或首页 audit section |
+
+**关键约束:**
+
+- 首页不能再堆叠所有子页面内容，只保留定位、信任、核心闭环、行业入口和 audit CTA。
+- HVAC 必须作为独立行业样板页，而不是首页一个普通区块。
+- Demo 必须独立说明 `real today / configurable / optional later`，避免销售误导。
+- Pricing 必须像服务套餐，不像 SaaS 功能矩阵。
+- Lead Inbox 只作为轻量 owner view 预览，不开发 R0.8 后台能力。
 
 ### I0.7.1 Visual System and Brand Direction
 
 **Iteration ID:** I0.7.1
-**目标:** 建立 Dandelion 官网的专业视觉方向，让它可以作为客户网站设计质量样板。
+**目标:** 将多页面高保真原型中的 `Warm Operator Studio` 视觉系统落地到前端代码，让官网具备专业客户网站的基础视觉质量。
 **状态:** Planned
 
 **范围:**
-- 定义品牌设计方向：色彩、字体、按钮、卡片、图形、背景、图片风格。
-- 建立页面级 layout tokens：section spacing、content width、mobile rhythm。
-- 重构首页关键区块，避免默认模板感和 generic SaaS 风格。
-- 保留现有业务叙事，但提升视觉层次、信任感和 CTA 强度。
+- 从 `prototypes/dandelion-multipage/styles.css` 提取可维护的 design tokens 到 `globals.css` / Tailwind 配置。
+- 定义品牌设计方向：Ink、Cream、Wheat、Moss、Ember、Porcelain、soft shadow、large radius、editorial typography。
+- 建立共享组件：site header、button variants、section header、cards、proof strip、split panel、mobile sticky CTA。
+- 重构全站导航，使公开页面使用一致 header 和 primary audit CTA。
+- 保留现有业务叙事，但提升视觉层次、信任感和 CTA 强度，避免 generic SaaS 风格。
 - 更新设计验收截图或视觉 QA 记录。
 
 **验收:**
 - 首页首屏 5 秒内表达专业、可信、面向 SMB。
 - Desktop 和 mobile 均有明确视觉层次。
 - CTA 样式一致，primary/secondary action 清楚。
+- 公开页面共享同一视觉系统，不出现页面间割裂。
+- 不引入新的 UI framework。
 - `npm run build` 通过。
 - Review 必须包含桌面与手机端截图或浏览器验证记录。
 
-### I0.7.2 Core Page Experience Polish
+### I0.7.2 Multipage Information Architecture Implementation
 
 **Iteration ID:** I0.7.2
-**目标:** 优化 Home、Services、Industries、Demo、Pricing 的阅读节奏和转化路径。
+**目标:** 按多页面原型实现真实官网信息架构，避免把所有内容堆在首页。
 **状态:** Planned
 
 **范围:**
-- 每个页面重构为清晰叙事：problem、offer、proof、process、CTA。
-- 删除或压缩低价值功能堆砌内容。
-- 增加 trust/proof 组件：服务区域、响应时间、流程、结果承诺、FAQ。
-- Demo 页面明确区分 real MVP、mock、roadmap，避免误导。
-- Pricing 页面降低决策压力，突出 setup + monthly service 的简单选择。
+- Home：只承担定位、信任、核心闭环、行业入口和 audit CTA。
+- Services：解释 Professional Website、Quote Request Flow、Booking Path、Lead Inbox Lite、Conversion Snapshot、Managed Updates。
+- Industries：展示 HVAC、Dental、Immigration 三个行业入口和行业化复用逻辑。
+- 页面间导航、CTA、文案风格与多页面原型一致。
+- 删除或压缩低价值功能堆砌内容，保留每页清晰叙事：problem、offer、proof、process、CTA。
+- 复用共享组件，不在页面内复制大量样式。
 
 **验收:**
 - 访问者 30 秒内能理解服务对象、核心价值和下一步动作。
 - 每个核心页面都有 above-fold CTA 和 bottom CTA。
 - 页面不以后台功能为主角，主角是客户网站和业务结果。
+- Home 不包含完整 HVAC、完整 Demo、完整 Pricing、完整 Audit 页内容，只保留入口和预览。
+- `services`、`industries`、`pricing`、`demo` 路由均可直接访问。
 - `npm run build` 通过。
 
 ### I0.7.3 Industry Website Template: HVAC
 
 **Iteration ID:** I0.7.3
-**目标:** 将 HVAC 页面升级为第一个可销售的行业网站样板，而不是单纯行业 demo。
+**目标:** 按 `hvac.html` 高保真原型，将 HVAC 页面升级为第一个可销售的行业网站样板，而不是单纯功能 demo。
 **状态:** Planned
 
 **范围:**
-- HVAC 首页式 landing page：emergency/service/quote 场景清楚。
+- HVAC 首页式 landing page：service search、emergency、repair、installation、maintenance、quote 场景清楚。
 - HVAC 服务区块：repair、installation、maintenance、emergency。
 - 行业 trust elements：licensed/insured、service area、response promise、review/social proof placeholder。
 - Quote form CTA 与页面文案强绑定。
+- HVAC quote form 使用 `FormRenderer` / schema-driven path，不回退硬编码提交路径。
 - 移动端突出 call/quote action。
 
 **验收:**
@@ -429,15 +457,36 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 页面视觉和文案明显区别于 Dandelion 官网，但复用同一设计系统。
 - Quote form 保持简单，字段只服务报价跟进。
 - 合法提交写入 lead/event。
+- 手机端能在 30 秒内完成 quote CTA 到表单理解。
 
-### I0.7.4 Mobile and Form Experience QA
+### I0.7.4 Demo and Pricing Conversion Pages
 
 **Iteration ID:** I0.7.4
-**目标:** 把移动端、表单、成功状态和错误状态提升到可上线质量。
+**目标:** 按 `demo.html` 和 `pricing.html` 原型，把 Demo 与 Pricing 变成可销售、可信、不误导的独立页面。
+**状态:** Planned
+
+**范围:**
+- Demo 页面展示 visitor view、owner view、lead loop，并明确 `real today / configurable / optional later`。
+- Demo 页面不夸大未实现能力，不把 roadmap 写成已上线。
+- Pricing 页面采用服务套餐表达：Launch、Growth、Managed Ops。
+- Pricing 页面避免 SaaS feature matrix，突出 audit 作为下一步。
+- 每页都有 primary audit CTA 和清楚的 bottom CTA。
+
+**验收:**
+- Demo 页面无需销售讲解即可理解“网站 -> 表单/预约 -> 通知 -> Lead Inbox”的闭环。
+- Demo 页面明确标记真实能力、可配置能力和后续可选能力。
+- Pricing 页面能降低购买不确定性，而不是增加复杂比较。
+- `npm run build` 通过。
+
+### I0.7.5 Mobile, Audit Form, and Website QA
+
+**Iteration ID:** I0.7.5
+**目标:** 按 `audit.html` 原型和 Website QA Checklist，把移动端、audit form、HVAC quote form、成功状态和错误状态提升到可上线质量。
 **状态:** Planned
 
 **范围:**
 - Mobile navigation、hero、CTA band、form layout QA。
+- Audit flow 可以保留首页 section 或拆成独立 route，但必须具备独立转化流程体验。
 - FormRenderer UI polish：loading、field error、form error、success state。
 - 成功状态必须说明下一步和预计响应方式。
 - 表单字段顺序、label、placeholder、help text 按行业优化。
@@ -448,6 +497,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 后端 422 错误能转成用户可理解的提示。
 - 表单成功状态不只是 `success`，必须有下一步说明。
 - Review 引用 [Customer Website Experience Standard](../product/Customer_Website_Experience_Standard.md) 的 checklist。
+- Review 引用 [Dandelion Multipage Prototype](../product/prototypes/dandelion-multipage/index.html) 并说明与原型的 intentional differences。
 
 ## R0.8 Operator Simplicity
 

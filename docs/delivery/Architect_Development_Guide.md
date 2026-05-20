@@ -1,6 +1,6 @@
 # Architect Development Guide
 
-**Version:** 1.1
+**Version:** 1.2
 **Date:** 2026-05-20
 **Active Branch:** `develop/r0.6-dynamic-capability`
 **Audience:** Architect / implementation agent
@@ -41,9 +41,10 @@ First close the active R0.6 quality issues:
 Then develop R0.7 as the next major product batch:
 
 - `I0.7.1 Visual System and Brand Direction`
-- `I0.7.2 Core Page Experience Polish`
+- `I0.7.2 Multipage Information Architecture Implementation`
 - `I0.7.3 Industry Website Template: HVAC`
-- `I0.7.4 Mobile and Form Experience QA`
+- `I0.7.4 Demo and Pricing Conversion Pages`
+- `I0.7.5 Mobile, Audit Form, and Website QA`
 
 Do **not** include R0.8 Lead Inbox Lite or R0.9 Launch Trust in the same implementation batch unless explicitly requested. Those affect backend operations and production risk and should be reviewed separately.
 
@@ -128,14 +129,36 @@ Rules:
 
 This is the main R0.7 work. The implementation agent must act as an architect, product manager, UI designer, and UX reviewer, not just a coder.
 
+Use these prototypes as the product and UI baseline:
+
+- `docs/product/prototypes/dandelion-multipage/index.html`
+- `docs/product/prototypes/dandelion-multipage/services.html`
+- `docs/product/prototypes/dandelion-multipage/industries.html`
+- `docs/product/prototypes/dandelion-multipage/hvac.html`
+- `docs/product/prototypes/dandelion-multipage/demo.html`
+- `docs/product/prototypes/dandelion-multipage/pricing.html`
+- `docs/product/prototypes/dandelion-multipage/audit.html`
+
 Required work:
 
 - Define a stronger visual system for the Dandelion website.
-- Improve Home, Services, Industries, Demo, Pricing, and HVAC page narrative.
+- Implement real multipage information architecture for Home, Services, Industries, HVAC, Demo, Pricing, and Audit flow.
 - Make the HVAC page feel like a sellable industry website sample.
 - Review mobile first: hero, navigation, CTA, form, success/error states.
 - Keep the design professional and specific. Avoid generic SaaS cards and default component styling.
 - Use the checklist in `docs/product/Customer_Website_Experience_Standard.md`.
+
+Page mapping:
+
+| Prototype | Target route |
+| --- | --- |
+| `index.html` | `clients/dandelion/frontend/app/page.tsx` |
+| `services.html` | `clients/dandelion/frontend/app/services/page.tsx` |
+| `industries.html` | `clients/dandelion/frontend/app/industries/page.tsx` |
+| `hvac.html` | `clients/dandelion/frontend/app/industries/hvac/page.tsx` |
+| `demo.html` | `clients/dandelion/frontend/app/demo/page.tsx` |
+| `pricing.html` | `clients/dandelion/frontend/app/pricing/page.tsx` |
+| `audit.html` | `clients/dandelion/frontend/app/page.tsx#audit` or a new audit route if justified |
 
 Acceptance rules:
 
@@ -143,6 +166,8 @@ Acceptance rules:
 - Every page must be understandable without a sales explanation.
 - Every form success state must explain the next step.
 - Desktop and mobile screenshots or browser verification notes are required in the handoff summary.
+- Home must not contain full HVAC, Demo, Pricing, and Audit page content. Home should contain summaries and routes into those pages.
+- If implementation intentionally differs from prototype, explain why in the handoff summary.
 
 ### Step 6: Defer Lead Inbox Lite To R0.8
 
@@ -206,6 +231,8 @@ If an index already exists, do not recreate it in a way that fails on repeated s
 
 - Keep shared API code in `clients/dandelion/frontend/lib/api.ts` or a small nearby module.
 - Keep reusable UI in `clients/dandelion/frontend/components`.
+- For R0.7, prefer creating small website components under a clear namespace such as `components/site/`.
+- Suggested shared components: `SiteHeader`, `SectionHeader`, `ProofStrip`, `ProblemCards`, `BusinessLoop`, `ServiceOutcomeGrid`, `IndustryShowcase`, `DemoPreview`, `PricingSnapshot`, `StickyMobileCta`.
 - Prefer typed payloads and responses.
 - Avoid duplicating form submission logic across forms.
 - Improve typography, colors, spacing, motion, imagery, and CTA style when they are generic or weak.
@@ -249,7 +276,8 @@ Frontend validation must include:
 - At least one migrated page renders with `FormRenderer`.
 - FormRenderer displays backend `422` errors.
 - Core pages render with improved website experience.
-- Mobile viewport smoke covers homepage, HVAC page, audit form, and quote form.
+- Mobile viewport smoke covers homepage, services, industries, HVAC page, demo, pricing, audit form, and quote form.
+- Route smoke covers `/`, `/services`, `/industries`, `/industries/hvac`, `/demo`, `/pricing`, `/privacy`, and audit CTA target.
 - Admin page builds if touched.
 
 Real client app smoke must include:
@@ -270,9 +298,10 @@ Even if implementation is done in one large batch, package evidence by iteration
 - `I0.6.2` evidence: FormRenderer component, API client, frontend build.
 - `I0.6.3` evidence: schema seed, Audit/HVAC migration, real submit smoke.
 - `I0.7.1` evidence: visual system changes, before/after notes, desktop/mobile screenshots.
-- `I0.7.2` evidence: core page narrative and CTA improvements.
+- `I0.7.2` evidence: real multipage routes, Home/Services/Industries screenshots, route smoke.
 - `I0.7.3` evidence: HVAC industry website sample and quote flow.
-- `I0.7.4` evidence: mobile/form QA checklist and browser verification.
+- `I0.7.4` evidence: Demo/Pricing screenshots and real/configurable/later messaging.
+- `I0.7.5` evidence: mobile/form QA checklist and browser verification.
 
 Create a short implementation summary before asking for review:
 
