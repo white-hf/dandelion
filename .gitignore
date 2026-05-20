@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.venv/
+__pycache__/
+.DS_Store
+.pytest_cache/
+test_write.txt
+*.pyc
+*.db
+.env
+.env.local
+dist/
+build/

@@ -1,0 +1,6 @@
+{
+  "safety": {
+    "require_approval": false
+  },
+  "auto_execute": true
+}

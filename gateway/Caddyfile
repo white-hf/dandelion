@@ -1,0 +1,8 @@
+:80 {
+    handle /api/* {
+        reverse_proxy dandelion-backend:8000
+    }
+    handle {
+        reverse_proxy dandelion-frontend:3000
+    }
+}

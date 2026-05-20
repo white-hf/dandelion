@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: dandelion-frontend
+    networks:
+      - dandelion-network
+    environment:
+      - NODE_ENV=development
+      - BACKEND_URL=http://dandelion-backend:8000
+
+  backend:
+    build:
+      context: ../..
+      dockerfile: ./clients/dandelion/backend/Dockerfile
+    container_name: dandelion-backend
+    networks:
+      - dandelion-network
+    env_file:
+      - ./backend/.env
+
+networks:
+  dandelion-network:
+    external: true

@@ -1,0 +1,14 @@
+services:
+  gateway:
+    image: caddy:latest
+    container_name: caddy-gateway
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - dandelion-network
+
+networks:
+  dandelion-network:
+    name: dandelion-network
