@@ -1,6 +1,6 @@
 # Release 与迭代计划
 
-**文档版本:** 1.7  
+**文档版本:** 1.8  
 **首次编写日期:** 2026-05-17  
 **最近更新日期:** 2026-05-19  
 **当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个可演示的 SMB 轻量运营闭环产品。
@@ -59,7 +59,7 @@ Review 使用统一状态：
 | R0.3 Launch Readiness | M0.3 Local/Staging Launch Readiness | I0.3.1 | Completed with Known Blockers | 准备 staging/demo 发布，记录 Docker 环境阻塞。 |
 | R0.4 Industry Pack | M0.4 First Industry Pack: HVAC | I0.4.1 | Completed | 用 HVAC 样板验证行业包复用。 |
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
-| R0.6 Dynamic Capability | M0.6 Dynamic Form System | I0.6.1 | Review Failed | select/email 校验已通过，但 checkbox 类型校验仍未闭环。 |
+| R0.6 Dynamic Capability | M0.6 Dynamic Form System | I0.6.1 Completed / I0.6.2 Planned | In Progress | 后端动态表单引擎已通过，下一步开发前端 FormRenderer。 |
 
 ## R0.1 Foundation MVP
 
@@ -228,6 +228,10 @@ Review 使用统一状态：
 | R0.5-CR-2026-05-19-001 | `docs/delivery/reviews/R0.5-CR-2026-05-19-admin-contract-followup.md` | R0.5 | M0.5 | Failed | 已有进展，但不允许进入下一 iteration，必须先修复客户默认后台不可用、公开 lead list、部署依赖和 migration safety。 |
 | R0.5-CR-2026-05-19-002 | `docs/delivery/reviews/R0.5-CR-2026-05-19-final-stabilization-pass.md` | R0.5 | M0.5 | Failed | P0 已关闭，但不允许进入 M0.6，必须先修复 backend Docker/compose 独立部署路径缺少 shared package。 |
 | R0.5-CR-2026-05-19-003 | `docs/delivery/reviews/R0.5-CR-2026-05-19-docker-context-fix.md` | R0.5 | M0.5 | Passed | R0.5 P0/P1 已关闭；允许进入 M0.6。Docker backend image build 已通过；容器运行时 MySQL 网络配置仍需在 staging 前验证。 |
+| R0.6-CR-2026-05-19-001 | `docs/delivery/reviews/R0.6-CR-2026-05-19-backend-form-engine.md` | R0.6 | M0.6 | Failed | 不允许进入前端 FormRenderer；必须先修复默认 MySQL 配置、migration 幂等性、schema required 校验、forms 测试和 schema 读取 API。 |
+| R0.6-CR-2026-05-19-002 | `docs/delivery/reviews/R0.6-CR-2026-05-19-dynamic-engine-fix.md` | R0.6 | M0.6 | Failed | 不允许进入前端 FormRenderer；必须先修复 select/options 后端校验，并统一 endpoint contract、文档、脚本和测试。 |
+| R0.6-CR-2026-05-19-003 | `docs/delivery/reviews/R0.6-CR-2026-05-19-deep-validation-followup.md` | R0.6 | M0.6 | Failed | select/email 校验、测试和构建已通过；必须先补齐 checkbox boolean 校验。 |
+| R0.6-CR-2026-05-19-004 | `docs/delivery/reviews/R0.6-CR-2026-05-19-checkbox-validation-pass.md` | R0.6 | M0.6 | Passed | I0.6.1 后端动态表单引擎通过；允许进入 I0.6.2 Frontend FormRenderer。 |
 
 ## 6. Review 文档演进规则
 
@@ -257,20 +261,41 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.6.1
 **目标:** 实现后端通用表单提交引擎，支持通过 JSON 配置定义字段，无需修改代码即可支持新行业。
-**状态:** Review Failed
-**当前 Review:** `R0.6-CR-2026-05-19-003`
+**状态:** Completed
+**当前 Review:** `R0.6-CR-2026-05-19-004`
 **范围:**
 - form_configs 数据库表与 ORM 模型。
 - 后端通用表单提交 API：当前标准 contract 为 `GET /api/forms/{form_key}` + `POST /api/forms/submit`。
-- 动态字段校验逻辑：当前已覆盖 required presence、select/options、email，仍缺少 checkbox boolean 校验。
+- 动态字段校验逻辑：覆盖 required presence、select/options、email、checkbox boolean。
 - 迁移 Audit Form 与 HVAC Quote 到配置驱动。
 
 **验收:**
 - 通过 API 插入一个 JSON 配置后，即可使用新接口接收对应数据。
 - 提交的数据正确存入 leads.custom_fields。
 - 自动触发对应的 form_submit 事件。
+- `.venv/bin/python -m pytest -q` 通过，结果 `7 passed`。
+- `npm run build` 通过。
+- 真实 client app smoke 验证 MySQL、schema discovery、valid checkbox、invalid checkbox/select/email。
 
-**当前阻断:**
-- checkbox 类型后端校验未实现，非布尔值仍可写入 `leads.custom_fields`。
-- 提交的 pass review 复用了 `R0.6-CR-2026-05-19-002`；下一份 follow-up/pass review 必须递增到 `R0.6-CR-2026-05-19-004`。
-- forms 测试需补充 invalid checkbox 和 valid checkbox。
+**完成说明:** R0.6.1 后端引擎已通过最终 review，可作为前端配置化渲染器的 API 基线。
+
+### I0.6.2 Frontend FormRenderer
+
+**Iteration ID:** I0.6.2  
+**目标:** 前端不再为每个行业硬编码表单字段，而是根据 `GET /api/forms/{form_key}` 返回的 schema 动态渲染表单并提交到 `POST /api/forms/submit`。  
+**状态:** Planned  
+**前置条件:** I0.6.1 Passed。
+
+**范围:**
+- 新增可复用 `FormRenderer` 组件。
+- 支持字段类型：text、email、phone、textarea、select、checkbox、date。
+- 支持 required、placeholder、options、submit_label、success_message。
+- 将 backend `422 detail.errors` 显示为用户可理解的字段/表单错误。
+- 将 Audit Form 和 HVAC Quote Form 迁移到 schema-driven 渲染路径，保留现有页面视觉风格。
+
+**验收:**
+- 使用 `form_key` 拉取 schema 后可以渲染完整表单。
+- 合法提交写入 lead/event。
+- invalid select/email/checkbox 能显示后端返回错误。
+- `npm run build` 通过。
+- 至少一个真实页面使用 `FormRenderer` 替代硬编码字段。
