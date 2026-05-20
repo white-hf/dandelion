@@ -5,6 +5,7 @@
 **对象:** Dandelion Growth Systems 官网客户方案
 **角色假设:** 你是客户，我作为产品经理、网站架构师、UI/UX 设计师交付方案供 review。
 **相关文档:** [Product Strategy](Product_Strategy.md), [Company Website PRD](Company_Website_PRD.md), [Customer Website Experience Standard](Customer_Website_Experience_Standard.md)
+**高保真原型:** [Dandelion Homepage High-Fidelity Prototype](prototypes/dandelion-homepage-high-fidelity.html)
 
 ---
 
