@@ -33,7 +33,7 @@ R<release>-CR-<YYYY-MM-DD>-<sequence>
 
 ## 当前 Review
 
-- `R0.6-CR-2026-05-19-004`: Passed，见 `R0.6-CR-2026-05-19-checkbox-validation-pass.md`。
+- `R0.7-CR-2026-05-20-001`: Failed，见 `R0.7-CR-2026-05-20-large-iteration-review.md`。
 
 ## Review Ledger
 
@@ -47,3 +47,4 @@ R<release>-CR-<YYYY-MM-DD>-<sequence>
 | R0.6-CR-2026-05-19-002 | `R0.6-CR-2026-05-19-dynamic-engine-fix.md` | R0.6 Dynamic Capability | M0.6 Dynamic Form System | Failed | 不允许进入前端 FormRenderer；必须先修复 select/options 后端校验，并统一 endpoint contract、文档、脚本和测试。 |
 | R0.6-CR-2026-05-19-003 | `R0.6-CR-2026-05-19-deep-validation-followup.md` | R0.6 Dynamic Capability | M0.6 Dynamic Form System | Failed | select/email 校验、测试和构建已通过；暂不进入前端 FormRenderer，必须先补齐 checkbox boolean 校验。 |
 | R0.6-CR-2026-05-19-004 | `R0.6-CR-2026-05-19-checkbox-validation-pass.md` | R0.6 Dynamic Capability | M0.6 Dynamic Form System | Passed | I0.6.1 后端动态表单引擎已通过；允许进入 I0.6.2 Frontend FormRenderer。 |
+| R0.7-CR-2026-05-20-001 | `R0.7-CR-2026-05-20-large-iteration-review.md` | R0.6 Dynamic Capability / R0.7 Operations Console | M0.6 Dynamic Form System / M0.7 Admin CRM Lite | Failed | 大迭代未通过；必须先修复真实 client app 回退 SQLite、events schema 与现有 MySQL 不兼容、CSV export method mismatch、回归测试覆盖下降、event contract 漂移和 admin audit event 缺失。 |
