@@ -6,7 +6,7 @@
 **产品名称:** Dandelion Growth Systems
 **产品类型:** 公司官网 + 第一个业务运营闭环 Demo
 **目标用户:** 北美本地服务型 SMB owner / operator
-**相关文档:** [Customer Website Experience Standard](Customer_Website_Experience_Standard.md), [Company Website Subsystems](Company_Website_Subsystems.md), [Agent Readiness Assessment](Agent_Readiness_Assessment.md), [Product Strategy](Product_Strategy.md)
+**相关文档:** [Dandelion Website Product Design Prototype](Dandelion_Website_Product_Design_Prototype.md), [Customer Website Experience Standard](Customer_Website_Experience_Standard.md), [Company Website Subsystems](Company_Website_Subsystems.md), [Agent Readiness Assessment](Agent_Readiness_Assessment.md), [Product Strategy](Product_Strategy.md)
 
 ---
 
