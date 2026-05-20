@@ -1,6 +1,6 @@
 # Release 与迭代计划
 
-**文档版本:** 1.8  
+**文档版本:** 1.9  
 **首次编写日期:** 2026-05-17  
 **最近更新日期:** 2026-05-19  
 **当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个可演示的 SMB 轻量运营闭环产品。
@@ -59,7 +59,43 @@ Review 使用统一状态：
 | R0.3 Launch Readiness | M0.3 Local/Staging Launch Readiness | I0.3.1 | Completed with Known Blockers | 准备 staging/demo 发布，记录 Docker 环境阻塞。 |
 | R0.4 Industry Pack | M0.4 First Industry Pack: HVAC | I0.4.1 | Completed | 用 HVAC 样板验证行业包复用。 |
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
-| R0.6 Dynamic Capability | M0.6 Dynamic Form System | I0.6.1 Completed / I0.6.2 Planned | In Progress | 后端动态表单引擎已通过，下一步开发前端 FormRenderer。 |
+| R0.6 Dynamic Capability | M0.6 Dynamic Form System | I0.6.1 Completed / I0.6.2 Planned | In Progress | 完成配置化表单闭环，让官网进入“可上线 MVP”状态。 |
+| R0.7 Operations Console | M0.7 Admin CRM Lite | I0.7.1-I0.7.3 | Planned | 补齐后台轻量运营闭环，让内部 owner 能处理线索、备注、事件和基础导出。 |
+| R0.8 Launch Hardening | M0.8 Production Launch | I0.8.1-I0.8.3 | Planned | 完成上线前安全、通知、备份、部署和 smoke 验收。 |
+
+## 4.1 Completion Standards
+
+### Standard A: 官网可上线 MVP
+
+目标：Dandelion 官网可以公开上线、用于销售演示和冷启动获客。
+
+必须满足：
+
+- Marketing pages 完整：Home、Services、Industries、HVAC、Demo、Pricing、Privacy。
+- 至少 Audit Form 和 HVAC Quote Form 能提交真实 lead。
+- 所有表单走统一配置化渲染路径，不再依赖每个页面硬编码字段。
+- 后端保存 lead、event，并支持 admin dashboard 查看。
+- Admin 接口受保护。
+- Frontend build、backend tests、真实 client app smoke 均通过。
+- 有 launch runbook 和 `.env.example`。
+
+对应完成点：R0.6 完成并 review passed。
+
+### Standard B: 第一个标准化客户产品
+
+目标：官网不只是营销页，而是可以作为客户网站项目的标准交付样板。
+
+必须满足：
+
+- 配置化表单系统完成前后端闭环。
+- Admin CRM Lite 能支持线索列表、详情、状态、备注、事件时间线、基础筛选。
+- Notification System 至少支持 mock + SMTP/provider adapter，并记录发送结果。
+- Booking CTA/event tracking 可复用。
+- 支持基础 CSV export，便于小企业离开复杂 SaaS 也能拿到数据。
+- Docker/backend/frontend 部署路径可复现。
+- 上线前具备 rate limit、生产配置检查、备份/恢复 runbook 和 staging smoke。
+
+对应完成点：R0.8 完成并 review passed。
 
 ## R0.1 Foundation MVP
 
@@ -299,3 +335,155 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - invalid select/email/checkbox 能显示后端返回错误。
 - `npm run build` 通过。
 - 至少一个真实页面使用 `FormRenderer` 替代硬编码字段。
+
+### I0.6.3 Schema Seed and Website Migration
+
+**Iteration ID:** I0.6.3  
+**目标:** 把 Dandelion 官网自身作为第一个配置化表单客户，完成 Audit Form 与 HVAC Quote Form 的 schema seed、页面迁移和回归验证。  
+**状态:** Planned  
+**前置条件:** I0.6.2 完成。
+
+**范围:**
+- 新增或完善 form config seed 脚本，写入 `audit_request` 与 `hvac_quote`。
+- Audit Form 页面改为读取 `audit_request` schema。
+- HVAC 页面改为读取 `hvac_quote` schema。
+- 保留现有页面视觉和 CTA 叙事，不因动态渲染降低转化体验。
+- 更新前端 API client，标准化 `getFormConfig` 与 `submitForm`。
+
+**验收:**
+- 新库初始化后可 seed 两个表单配置。
+- Audit Form 和 HVAC Quote Form 都通过动态 schema 渲染。
+- 两个表单合法提交均写入 lead/event。
+- 后端 invalid select/email/checkbox 错误能在前端显示。
+- `npm run build` 和 backend pytest 均通过。
+
+## R0.7 Operations Console
+
+### M0.7 Admin CRM Lite
+
+**目标:** 把当前后台从“能看数据”提升为“能轻量运营线索”的内部工具。  
+**状态:** Planned  
+**建议开发方式:** 可以让架构师一次性开发 I0.7.1-I0.7.3，但必须在提交后按三个 review slice 验收。
+
+### I0.7.1 Lead Detail and Event Timeline
+
+**Iteration ID:** I0.7.1  
+**目标:** Admin 能从 lead list 进入 lead detail，并看到该 lead 的关键字段、状态和事件时间线。  
+**状态:** Planned
+
+**范围:**
+- 后端新增或补齐 lead detail API。
+- 后端提供按 `lead_id` 查询 events 的 timeline API。
+- 前端 Admin 页面支持 lead list -> detail。
+- detail 显示 contact、business、source、custom_fields、status、last_activity。
+- timeline 显示 form_submit、status_update、notification events。
+
+**验收:**
+- 无 admin key 不能访问。
+- 有 admin key 可查看 lead detail。
+- lead 相关 events 按时间倒序显示。
+- `npm run build` 和 backend pytest 通过。
+
+### I0.7.2 Notes, Filters, Pagination
+
+**Iteration ID:** I0.7.2  
+**目标:** Admin 能处理线索，而不仅是查看线索。  
+**状态:** Planned
+
+**范围:**
+- Lead notes API：create/list。
+- Lead list 支持 status、industry、source 筛选。
+- Lead list 支持分页。
+- Admin 页面支持添加 note 和更新状态后刷新 timeline。
+- Dashboard summary 与筛选口径一致。
+
+**验收:**
+- 可以为 lead 添加 note。
+- note 写入后增加 `notes_count` 或可在 detail 中显示。
+- status 更新写入 event。
+- 分页和筛选不会暴露未授权数据。
+- backend pytest 覆盖 notes/status/filter。
+
+### I0.7.3 CSV Export and Operator Workflow Polish
+
+**Iteration ID:** I0.7.3  
+**目标:** 让内部 owner 可以把线索数据导出，并用后台完成日常跟进。  
+**状态:** Planned
+
+**范围:**
+- Admin CSV export API。
+- Export 字段限制，避免导出不必要 event metadata。
+- Admin UI 增加 empty/loading/error states。
+- Dashboard 增加 lead response workflow hints。
+- 更新 admin 使用说明。
+
+**验收:**
+- CSV export 需要 admin key。
+- CSV 包含 lead 基础字段、status、source、created_at、last_activity。
+- UI 在无数据、错误、加载时可用。
+- `npm run build` 和 backend pytest 通过。
+
+## R0.8 Launch Hardening
+
+### M0.8 Production Launch
+
+**目标:** 将官网从本地可演示推进到可上线、可恢复、可监控的生产 MVP。  
+**状态:** Planned  
+**建议开发方式:** I0.8.1-I0.8.3 可以同一批开发，但 review 必须按 security、notification、deployment 三类验收。
+
+### I0.8.1 Notification Adapter and Audit Trail
+
+**Iteration ID:** I0.8.1  
+**目标:** 新 lead 创建后能可靠触发内部通知，并记录成功/失败。  
+**状态:** Planned
+
+**范围:**
+- Notification adapter interface。
+- Local mock adapter。
+- SMTP 或 provider adapter 配置入口。
+- Notification logs 与 events 对齐。
+- 失败不阻塞 lead 保存。
+
+**验收:**
+- 本地 mock 模式可验证 notification_sent。
+- provider 配置缺失时不导致 500。
+- notification failure 记录为可诊断日志/event。
+- backend pytest 覆盖 success/failure。
+
+### I0.8.2 Security, Rate Limit, Production Config Check
+
+**Iteration ID:** I0.8.2  
+**目标:** 降低公开表单、后台和生产配置的基础风险。  
+**状态:** Planned
+
+**范围:**
+- Public form submission rate limit。
+- Admin key 强度检查或生产配置检查。
+- CORS / allowed origin 配置。
+- 禁止生产默认 secret。
+- 明确 error response 不泄露内部信息。
+
+**验收:**
+- 缺失生产必需 env 时启动失败或输出明确错误。
+- 默认 development secret 不能用于 production。
+- rate limit 命中时返回明确状态。
+- 后台接口仍全部要求 admin key。
+
+### I0.8.3 Deployment Runbook and Staging Smoke
+
+**Iteration ID:** I0.8.3  
+**目标:** 让官网可以按文档稳定部署、验证和回滚。  
+**状态:** Planned
+
+**范围:**
+- 更新 Docker Compose / deployment runbook。
+- MySQL migration runbook。
+- Backup/restore runbook。
+- Staging smoke checklist。
+- Release merge checklist。
+
+**验收:**
+- 新环境按 runbook 可初始化数据库和表。
+- backend/frontend 容器 build 通过。
+- staging smoke 覆盖 homepage、form submit、admin dashboard、lead status update。
+- 文档说明如何从 release branch 合并回 `main`。
