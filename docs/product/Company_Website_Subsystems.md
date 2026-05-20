@@ -1,9 +1,10 @@
 # 公司官网子系统设计
 
-**文档版本:** 1.0  
-**编写日期:** 2026-05-17  
-**产品:** Dandelion Growth Systems 公司官网  
-**目标:** 将公司官网实现为第一个轻量运营闭环产品，而不是静态宣传页。
+**文档版本:** 1.1
+**编写日期:** 2026-05-17
+**最近更新日期:** 2026-05-20
+**产品:** Dandelion Growth Systems 公司官网
+**目标:** 将公司官网实现为第一个专业客户网站样板，并用轻量运营闭环支撑转化和跟进。
 
 ---
 
@@ -13,14 +14,15 @@
 
 | 子系统 | MVP 是否必须 | 业务目的 |
 | --- | --- | --- |
+| Website Experience System | 必须 | 保证客户网站专业、优美、移动端好用 |
 | Marketing Site | 必须 | 解释定位、建立信任、驱动 CTA |
 | Audit Request / Lead Capture | 必须 | 获取潜在客户信息 |
 | Event Tracking | 必须 | 记录访问、CTA、表单和 booking 行为 |
 | Notification System | 必须 | 新线索及时通知内部 owner |
-| Basic Admin CRM | 必须 | 查看线索、更新状态、记录备注 |
+| Lead Inbox Lite | 必须 | 查看线索、更新状态、记录备注 |
 | Booking Integration | 必须 | 引导 discovery call，MVP 用外部链接 |
 | Demo System | 必须 | 展示完整业务闭环 |
-| Conversion Dashboard | MVP 轻量 | 展示线索、来源、CTA、转化事件 |
+| Conversion Snapshot | MVP 轻量 | 展示线索、来源、CTA、转化事件 |
 | Content/Industry Pack System | V1 | 支持快速复制行业页面和 Demo |
 | Review Booster Simulation | V1 | 用于演示服务后索评，不先做完整自动化 |
 | Client Portal / Intake | Later | 用于真实客户项目，不进入官网 MVP |
@@ -36,16 +38,16 @@
 4. 系统创建 lead。
 5. 系统写入 event。
 6. 系统发送内部邮件通知。
-7. 内部 admin 查看 lead。
-8. 内部 admin 更新状态和备注。
+7. 内部 owner 在 Lead Inbox 查看 lead。
+8. 内部 owner 更新状态和备注。
 9. 访客或销售点击 booking CTA。
-10. Dashboard 显示基础转化数据。
+10. Conversion Snapshot 显示基础转化数据。
 
 ## 3. 子系统细化
 
 ### 3.1 Marketing Site
 
-Owner: Conversion UI Lead  
+Owner: Conversion UI Lead
 MVP 页面：
 
 - Home
@@ -75,9 +77,36 @@ MVP 页面：
 - 移动端优先。
 - CTA click 写入 event。
 
+### 3.1.1 Website Experience System
+
+Owner: Product Manager + UI/UX Designer + Conversion UI Lead
+MVP 质量目标：
+
+- 专业视觉方向，不像模板站。
+- 移动端优先，CTA 和表单操作顺畅。
+- 每个页面有清晰叙事：problem、offer、proof、process、CTA。
+- 每个行业页面有行业特定文案、信任元素和转化路径。
+- 表单短、清楚、有下一步说明。
+
+核心资产：
+
+- Design tokens。
+- Page section patterns。
+- Industry landing page pattern。
+- Trust/proof section pattern。
+- Form UX pattern。
+- Mobile QA checklist。
+
+验收标准：
+
+- 首页 5 秒测试通过。
+- 核心页面 30 秒理解测试通过。
+- 手机端 audit/quote 流程可完成。
+- 视觉、文案、CTA、表单符合 [Customer Website Experience Standard](Customer_Website_Experience_Standard.md)。
+
 ### 3.2 Audit Request / Lead Capture
 
-Owner: Operations Backend Lead + Conversion UI Lead  
+Owner: Operations Backend Lead + Conversion UI Lead
 MVP 表单字段：
 
 - business_name
@@ -115,7 +144,7 @@ Lead status:
 
 ### 3.3 Event Tracking
 
-Owner: Operations Backend Lead + QA/Growth Analyst  
+Owner: Operations Backend Lead + QA/Growth Analyst
 事件类型：
 
 - page_view
@@ -159,7 +188,7 @@ Owner: Operations Backend Lead + QA/Growth Analyst
 
 ### 3.4 Notification System
 
-Owner: Operations Backend Lead  
+Owner: Operations Backend Lead
 MVP 渠道：
 
 - Email only: Mailgun / SendGrid / SMTP adapter。
@@ -186,9 +215,9 @@ MVP 渠道：
 - 失败不阻塞 lead 保存。
 - 本地开发可使用 mock adapter。
 
-### 3.5 Basic Admin CRM
+### 3.5 Lead Inbox Lite
 
-Owner: Conversion UI Lead + Operations Backend Lead  
+Owner: Conversion UI Lead + Operations Backend Lead
 MVP 页面：
 
 - Login / protected access
@@ -211,15 +240,16 @@ Lead list columns:
 
 验收标准：
 
-- Admin 不公开。
+- Lead Inbox 不公开。
 - 可以查看 lead。
 - 可以更新 status。
 - 可以添加 notes。
 - 可以看到 lead 相关 event。
+- 不引入复杂 CRM pipeline、复杂权限或复杂配置。
 
 ### 3.6 Booking Integration
 
-Owner: Product Manager + DevOps/SRE  
+Owner: Product Manager + DevOps/SRE
 MVP：
 
 - 外部 Calendly 或 Google Appointment Schedule。
@@ -241,10 +271,10 @@ V1：
 
 ### 3.7 Demo System
 
-Owner: Product Manager + Conversion UI Lead  
+Owner: Product Manager + Conversion UI Lead
 MVP Demo narrative：
 
-> A local HVAC business gets traffic from Google Ads. A visitor requests a quote. The owner receives a notification. The lead appears in the admin view. Follow-up and review request are shown as the next workflow.
+> A local HVAC business gets traffic from Google Ads. A visitor requests a quote. The owner receives a notification. The lead appears in the Lead Inbox. Follow-up and review request are shown as the next workflow.
 
 Demo 必须标记：
 
@@ -258,9 +288,9 @@ Demo 必须标记：
 - Demo 页面展示 visitor view 和 business owner view。
 - Demo 不误导客户以为未实现功能已上线。
 
-### 3.8 Conversion Dashboard
+### 3.8 Conversion Snapshot
 
-Owner: QA/Growth Analyst + Operations Backend Lead  
+Owner: QA/Growth Analyst + Operations Backend Lead
 MVP cards：
 
 - Total leads
@@ -279,13 +309,13 @@ V1 cards：
 
 验收标准：
 
-- Dashboard 能回答：本周有多少线索、来自哪里、处于什么状态。
+- Conversion Snapshot 能回答：本周有多少线索、来自哪里、处于什么状态。
 - 不做复杂 BI。
 - 数据来自 event 和 lead records。
 
 ### 3.9 Content / Industry Pack System
 
-Owner: Product Manager + Conversion UI Lead  
+Owner: Product Manager + Conversion UI Lead
 V1 目标：
 
 - 使用配置驱动行业页面。
@@ -419,7 +449,7 @@ POST /api/internal/notifications/lead-created
 4. Event API and tracking hooks。
 5. Email/mock notification adapter。
 6. Basic admin lead list/detail。
-7. Dashboard cards。
+7. Conversion Snapshot cards。
 8. Demo page showing the loop。
 9. QA, accessibility, privacy and launch pass。
 
@@ -432,7 +462,7 @@ POST /api/internal/notifications/lead-created
 | Event tracking | Own | Lightweight event table |
 | Email notification | Integrate | Mailgun/SendGrid/SMTP adapter |
 | Booking | Integrate | External calendar link |
-| Admin CRM Lite | Own | Basic internal dashboard |
+| Lead Inbox Lite | Own | Basic internal lead follow-up |
 | Review automation | Mock in demo | V1 after lead loop |
 | SMS | Later integrate | Not MVP |
 | Payments | Later integrate | Stripe later |
@@ -447,8 +477,7 @@ MVP can be considered complete when:
 - Lead submission sends or mocks notification.
 - Event tracking records CTA and form events.
 - Admin can view and update leads.
-- Dashboard shows basic counts.
+- Conversion Snapshot shows basic counts.
 - Demo page explains the business loop.
 - Privacy and accessibility smoke tests pass.
 - Local demo can be started reliably.
-

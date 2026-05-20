@@ -1,9 +1,9 @@
 # Release 与迭代计划
 
-**文档版本:** 1.9  
-**首次编写日期:** 2026-05-17  
-**最近更新日期:** 2026-05-19  
-**当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个可演示的 SMB 轻量运营闭环产品。
+**文档版本:** 2.0
+**首次编写日期:** 2026-05-17
+**最近更新日期:** 2026-05-20
+**当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个专业、优美、易用、可转化的客户网站样板，并用轻量后台支撑线索跟进闭环。
 
 ---
 
@@ -27,10 +27,13 @@ Review 文档不再复用单个文件，统一放在 `docs/delivery/reviews/`。
 ## 2. 总体原则
 
 - 每次迭代必须交付一个可运行、可验证的垂直切片。
-- 迭代之间尽量低依赖：前端营销、后端线索、事件、后台、部署可以独立推进，但最终通过 Demo 闭环整合。
+- 迭代之间尽量低依赖：网站体验、表单、线索、通知、轻量后台、部署可以独立推进，但最终通过 Demo 闭环整合。
 - 未完成总目标时，继续规划下一轮迭代、开发、测试、记录结果。
-- 不先做完整 SaaS；先实现可销售、可演示、可复用的官网 MVP。
+- 不先做完整 SaaS；先实现可销售、可演示、视觉专业、体验顺畅、可复用的客户网站 MVP。
 - 有 P0/P1 review 问题时，不开启新功能迭代，先进入 stabilization milestone。
+- 客户网站是核心产品，后台只是 owner 跟进线索的轻量工具。
+- 每个 release 必须至少改善一个客户可见的网站体验维度：视觉、文案、移动端、CTA、表单、速度、信任或转化。
+- 禁止在 R0.x 阶段扩张重型 CRM、复杂自动化、复杂报表和多角色权限。
 
 ## 3. 状态规范
 
@@ -59,27 +62,29 @@ Review 使用统一状态：
 | R0.3 Launch Readiness | M0.3 Local/Staging Launch Readiness | I0.3.1 | Completed with Known Blockers | 准备 staging/demo 发布，记录 Docker 环境阻塞。 |
 | R0.4 Industry Pack | M0.4 First Industry Pack: HVAC | I0.4.1 | Completed | 用 HVAC 样板验证行业包复用。 |
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
-| R0.6 Dynamic Capability | M0.6 Dynamic Form System | I0.6.1 Completed / I0.6.2 Planned | In Progress | 完成配置化表单闭环，让官网进入“可上线 MVP”状态。 |
-| R0.7 Operations Console | M0.7 Admin CRM Lite | I0.7.1-I0.7.3 | Planned | 补齐后台轻量运营闭环，让内部 owner 能处理线索、备注、事件和基础导出。 |
-| R0.8 Launch Hardening | M0.8 Production Launch | I0.8.1-I0.8.3 | Planned | 完成上线前安全、通知、备份、部署和 smoke 验收。 |
+| R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | In Progress | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
+| R0.7 Website Experience System | M0.7 Customer Website Quality | I0.7.1-I0.7.4 | Planned | 将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
+| R0.8 Operator Simplicity | M0.8 Lead Inbox Lite | I0.8.1-I0.8.3 | Planned | 做最小 owner 跟进工具，不做复杂 CRM。 |
+| R0.9 Launch Trust | M0.9 Production Launch | I0.9.1-I0.9.3 | Planned | 完成通知、安全、部署、备份和 staging smoke，让样板网站可上线。 |
 
 ## 4.1 Completion Standards
 
 ### Standard A: 官网可上线 MVP
 
-目标：Dandelion 官网可以公开上线、用于销售演示和冷启动获客。
+目标：Dandelion 官网可以公开上线、用于销售演示和冷启动获客，并达到未来客户网站的最低体验标准。
 
 必须满足：
 
 - Marketing pages 完整：Home、Services、Industries、HVAC、Demo、Pricing、Privacy。
+- 首页和核心页面视觉专业、移动端顺畅、CTA 明确。
 - 至少 Audit Form 和 HVAC Quote Form 能提交真实 lead。
 - 所有表单走统一配置化渲染路径，不再依赖每个页面硬编码字段。
-- 后端保存 lead、event，并支持 admin dashboard 查看。
+- 后端保存 lead、event，并支持 Lead Inbox / Conversion Snapshot 查看。
 - Admin 接口受保护。
 - Frontend build、backend tests、真实 client app smoke 均通过。
 - 有 launch runbook 和 `.env.example`。
 
-对应完成点：R0.6 完成并 review passed。
+对应完成点：R0.7 完成并 review passed。
 
 ### Standard B: 第一个标准化客户产品
 
@@ -87,23 +92,24 @@ Review 使用统一状态：
 
 必须满足：
 
+- 具备可复用的客户网站体验标准、页面模式和视觉 QA。
 - 配置化表单系统完成前后端闭环。
-- Admin CRM Lite 能支持线索列表、详情、状态、备注、事件时间线、基础筛选。
+- Lead Inbox Lite 能支持线索列表、详情、状态、备注、事件时间线、基础筛选。
 - Notification System 至少支持 mock + SMTP/provider adapter，并记录发送结果。
 - Booking CTA/event tracking 可复用。
 - 支持基础 CSV export，便于小企业离开复杂 SaaS 也能拿到数据。
 - Docker/backend/frontend 部署路径可复现。
 - 上线前具备 rate limit、生产配置检查、备份/恢复 runbook 和 staging smoke。
 
-对应完成点：R0.8 完成并 review passed。
+对应完成点：R0.9 完成并 review passed。
 
 ## R0.1 Foundation MVP
 
 ### M0.1 Company Website MVP Loop
 
-**Iteration ID:** I0.1.1  
+**Iteration ID:** I0.1.1
 **目标:** 跑通访客访问、提交 audit request、后端创建 lead、记录 event、内部 admin 查看和更新状态、dashboard 显示基础数据。
-**状态:** Completed  
+**状态:** Completed
 **完成说明:** Frontend build passed. Backend API loop passed. Docker verification was blocked because Docker was not installed in the current environment.
 
 **范围:**
@@ -130,9 +136,9 @@ Review 使用统一状态：
 
 ### M0.2 Demo and Conversion Polish
 
-**Iteration ID:** I0.2.1  
+**Iteration ID:** I0.2.1
 **目标:** 让客户无需讲解也能理解“网站 + 业务闭环”。
-**状态:** Completed  
+**状态:** Completed
 **完成说明:** Added Services, Industries, HVAC, Pricing, Privacy, Demo route coverage. Frontend build passed and routes returned 200 after dev server restart.
 
 **范围:**
@@ -154,9 +160,9 @@ Review 使用统一状态：
 
 ### M0.3 Local/Staging Launch Readiness
 
-**Iteration ID:** I0.3.1  
+**Iteration ID:** I0.3.1
 **目标:** 达到可通过 Cloudflare Tunnel 或 staging URL 演示的稳定状态。
-**状态:** Completed with Known Blockers  
+**状态:** Completed with Known Blockers
 **完成说明:** Added env example, launch runbook, admin API key protection, route checks, and verification notes. Docker verification remains blocked because Docker is unavailable in the current environment.
 
 **范围:**
@@ -178,9 +184,9 @@ Review 使用统一状态：
 
 ### M0.4 First Industry Pack: HVAC
 
-**Iteration ID:** I0.4.1  
+**Iteration ID:** I0.4.1
 **目标:** 基于官网底座制作 HVAC Lead Engine Demo。
-**状态:** Completed  
+**状态:** Completed
 **完成说明:** HVAC page includes an industry-specific quote request form that reuses the same Lead/Event/Admin loop. Frontend build and backend equivalent lead-loop smoke test passed.
 
 **范围:**
@@ -200,9 +206,9 @@ Review 使用统一状态：
 
 ### M0.5 Shared Module Integration Stabilization
 
-**目标:** 将架构师实现的 shared backend modules 稳定接入 Dandelion 官网，恢复并强化“网站 + 后台运营闭环”的可构建、可测试、可部署状态。  
-**状态:** Completed  
-**状态说明:** R0.5 P0/P1 已关闭。当前通过 review 为 `docs/delivery/reviews/R0.5-CR-2026-05-19-docker-context-fix.md`。Docker 已安装，backend image build 已通过；容器运行时 MySQL 网络配置仍需在 staging 前验证。  
+**目标:** 将架构师实现的 shared backend modules 稳定接入 Dandelion 官网，恢复并强化“网站 + 后台运营闭环”的可构建、可测试、可部署状态。
+**状态:** Completed
+**状态说明:** R0.5 P0/P1 已关闭。当前通过 review 为 `docs/delivery/reviews/R0.5-CR-2026-05-19-docker-context-fix.md`。Docker 已安装，backend image build 已通过；容器运行时 MySQL 网络配置仍需在 staging 前验证。
 **当前 Review:** `R0.5-CR-2026-05-19-003`
 
 **范围:**
@@ -225,7 +231,7 @@ Review 使用统一状态：
 
 ### I0.5.1 Runtime Config and Dependency Fix
 
-**状态:** Completed  
+**状态:** Completed
 **目标:** 先修复客户后端默认连接错误数据库、依赖不可复现和启动方式不稳定的问题。
 
 **验收:**
@@ -236,7 +242,7 @@ Review 使用统一状态：
 
 ### I0.5.2 Admin API Contract Recovery
 
-**状态:** Completed  
+**状态:** Completed
 **目标:** 恢复 Admin 页面依赖的 dashboard、lead queue、status update API。
 
 **验收:**
@@ -247,7 +253,7 @@ Review 使用统一状态：
 
 ### I0.5.3 Security and Migration Baseline
 
-**状态:** Completed  
+**状态:** Completed
 **目标:** 把后台数据接口和数据库 schema 拉回可交付基线。
 
 **验收:**
@@ -317,9 +323,9 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 ### I0.6.2 Frontend FormRenderer
 
-**Iteration ID:** I0.6.2  
-**目标:** 前端不再为每个行业硬编码表单字段，而是根据 `GET /api/forms/{form_key}` 返回的 schema 动态渲染表单并提交到 `POST /api/forms/submit`。  
-**状态:** Planned  
+**Iteration ID:** I0.6.2
+**目标:** 前端不再为每个行业硬编码表单字段，而是根据 `GET /api/forms/{form_key}` 返回的 schema 动态渲染表单并提交到 `POST /api/forms/submit`。
+**状态:** Planned
 **前置条件:** I0.6.1 Passed。
 
 **范围:**
@@ -338,9 +344,9 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 ### I0.6.3 Schema Seed and Website Migration
 
-**Iteration ID:** I0.6.3  
-**目标:** 把 Dandelion 官网自身作为第一个配置化表单客户，完成 Audit Form 与 HVAC Quote Form 的 schema seed、页面迁移和回归验证。  
-**状态:** Planned  
+**Iteration ID:** I0.6.3
+**目标:** 把 Dandelion 官网自身作为第一个配置化表单客户，完成 Audit Form 与 HVAC Quote Form 的 schema seed、页面迁移和回归验证。
+**状态:** Planned
 **前置条件:** I0.6.2 完成。
 
 **范围:**
@@ -357,18 +363,104 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 后端 invalid select/email/checkbox 错误能在前端显示。
 - `npm run build` 和 backend pytest 均通过。
 
-## R0.7 Operations Console
+## R0.7 Website Experience System
 
-### M0.7 Admin CRM Lite
+### M0.7 Customer Website Quality
 
-**目标:** 把当前后台从“能看数据”提升为“能轻量运营线索”的内部工具。  
-**状态:** Planned  
-**建议开发方式:** 可以让架构师一次性开发 I0.7.1-I0.7.3，但必须在提交后按三个 review slice 验收。
+**目标:** 把 Dandelion 官网从“功能可演示”升级为“客户愿意购买的专业网站样板”，并沉淀可复用的网站体验标准。
+**状态:** Planned
+**建议开发方式:** 可以让架构师和设计/前端 agent 一次性开发 I0.7.1-I0.7.4，但 review 必须按视觉系统、页面体验、移动端、表单体验四个 slice 验收。
+**设计原则:** 不和大型 SaaS 拼功能，优先做到像优秀 Google Docs 一样简单、清楚、顺畅。
 
-### I0.7.1 Lead Detail and Event Timeline
+### I0.7.1 Visual System and Brand Direction
 
-**Iteration ID:** I0.7.1  
-**目标:** Admin 能从 lead list 进入 lead detail，并看到该 lead 的关键字段、状态和事件时间线。  
+**Iteration ID:** I0.7.1
+**目标:** 建立 Dandelion 官网的专业视觉方向，让它可以作为客户网站设计质量样板。
+**状态:** Planned
+
+**范围:**
+- 定义品牌设计方向：色彩、字体、按钮、卡片、图形、背景、图片风格。
+- 建立页面级 layout tokens：section spacing、content width、mobile rhythm。
+- 重构首页关键区块，避免默认模板感和 generic SaaS 风格。
+- 保留现有业务叙事，但提升视觉层次、信任感和 CTA 强度。
+- 更新设计验收截图或视觉 QA 记录。
+
+**验收:**
+- 首页首屏 5 秒内表达专业、可信、面向 SMB。
+- Desktop 和 mobile 均有明确视觉层次。
+- CTA 样式一致，primary/secondary action 清楚。
+- `npm run build` 通过。
+- Review 必须包含桌面与手机端截图或浏览器验证记录。
+
+### I0.7.2 Core Page Experience Polish
+
+**Iteration ID:** I0.7.2
+**目标:** 优化 Home、Services、Industries、Demo、Pricing 的阅读节奏和转化路径。
+**状态:** Planned
+
+**范围:**
+- 每个页面重构为清晰叙事：problem、offer、proof、process、CTA。
+- 删除或压缩低价值功能堆砌内容。
+- 增加 trust/proof 组件：服务区域、响应时间、流程、结果承诺、FAQ。
+- Demo 页面明确区分 real MVP、mock、roadmap，避免误导。
+- Pricing 页面降低决策压力，突出 setup + monthly service 的简单选择。
+
+**验收:**
+- 访问者 30 秒内能理解服务对象、核心价值和下一步动作。
+- 每个核心页面都有 above-fold CTA 和 bottom CTA。
+- 页面不以后台功能为主角，主角是客户网站和业务结果。
+- `npm run build` 通过。
+
+### I0.7.3 Industry Website Template: HVAC
+
+**Iteration ID:** I0.7.3
+**目标:** 将 HVAC 页面升级为第一个可销售的行业网站样板，而不是单纯行业 demo。
+**状态:** Planned
+
+**范围:**
+- HVAC 首页式 landing page：emergency/service/quote 场景清楚。
+- HVAC 服务区块：repair、installation、maintenance、emergency。
+- 行业 trust elements：licensed/insured、service area、response promise、review/social proof placeholder。
+- Quote form CTA 与页面文案强绑定。
+- 移动端突出 call/quote action。
+
+**验收:**
+- HVAC 页面可单独发给潜在客户作为行业样板。
+- 页面视觉和文案明显区别于 Dandelion 官网，但复用同一设计系统。
+- Quote form 保持简单，字段只服务报价跟进。
+- 合法提交写入 lead/event。
+
+### I0.7.4 Mobile and Form Experience QA
+
+**Iteration ID:** I0.7.4
+**目标:** 把移动端、表单、成功状态和错误状态提升到可上线质量。
+**状态:** Planned
+
+**范围:**
+- Mobile navigation、hero、CTA band、form layout QA。
+- FormRenderer UI polish：loading、field error、form error、success state。
+- 成功状态必须说明下一步和预计响应方式。
+- 表单字段顺序、label、placeholder、help text 按行业优化。
+- 建立 Website QA Checklist 执行记录。
+
+**验收:**
+- 手机端完成一次 audit form 和 HVAC quote form 提交无阻塞。
+- 后端 422 错误能转成用户可理解的提示。
+- 表单成功状态不只是 `success`，必须有下一步说明。
+- Review 引用 [Customer Website Experience Standard](../product/Customer_Website_Experience_Standard.md) 的 checklist。
+
+## R0.8 Operator Simplicity
+
+### M0.8 Lead Inbox Lite
+
+**目标:** 让 SMB owner 能用最少操作跟进线索，后台保持像 inbox 一样简单，不做复杂 CRM。
+**状态:** Planned
+**建议开发方式:** 可以一次性开发 I0.8.1-I0.8.3，但 review 必须检查“是否降低 owner 操作负担”，不能只检查 API 完整性。
+
+### I0.8.1 Lead Detail and Timeline Lite
+
+**Iteration ID:** I0.8.1
+**目标:** Owner 能从 lead list 进入 lead detail，并看到联系信息、需求、来源和关键事件。
 **状态:** Planned
 
 **范围:**
@@ -376,65 +468,68 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 后端提供按 `lead_id` 查询 events 的 timeline API。
 - 前端 Admin 页面支持 lead list -> detail。
 - detail 显示 contact、business、source、custom_fields、status、last_activity。
-- timeline 显示 form_submit、status_update、notification events。
+- timeline 只展示 owner 需要理解的事件，不展示技术噪音。
 
 **验收:**
 - 无 admin key 不能访问。
 - 有 admin key 可查看 lead detail。
 - lead 相关 events 按时间倒序显示。
+- 页面能回答“我下一步该联系谁、为什么联系”。
 - `npm run build` 和 backend pytest 通过。
 
-### I0.7.2 Notes, Filters, Pagination
+### I0.8.2 Notes, Status, Filters
 
-**Iteration ID:** I0.7.2  
-**目标:** Admin 能处理线索，而不仅是查看线索。  
+**Iteration ID:** I0.8.2
+**目标:** Owner 能完成最小跟进动作：标记状态、写备注、找到未处理线索。
 **状态:** Planned
 
 **范围:**
 - Lead notes API：create/list。
 - Lead list 支持 status、industry、source 筛选。
-- Lead list 支持分页。
+- Lead list 支持简单分页。
 - Admin 页面支持添加 note 和更新状态后刷新 timeline。
 - Dashboard summary 与筛选口径一致。
 
 **验收:**
 - 可以为 lead 添加 note。
-- note 写入后增加 `notes_count` 或可在 detail 中显示。
 - status 更新写入 event。
-- 分页和筛选不会暴露未授权数据。
+- note 写入后可在 detail 中显示。
+- 筛选和分页不会暴露未授权数据。
+- 后台 UI 不引入复杂 pipeline、复杂权限或复杂配置。
 - backend pytest 覆盖 notes/status/filter。
 
-### I0.7.3 CSV Export and Operator Workflow Polish
+### I0.8.3 CSV Export and Owner Workflow Polish
 
-**Iteration ID:** I0.7.3  
-**目标:** 让内部 owner 可以把线索数据导出，并用后台完成日常跟进。  
+**Iteration ID:** I0.8.3
+**目标:** Owner 可以导出线索，并在后台看到简单的跟进提示。
 **状态:** Planned
 
 **范围:**
 - Admin CSV export API。
 - Export 字段限制，避免导出不必要 event metadata。
-- Admin UI 增加 empty/loading/error states。
-- Dashboard 增加 lead response workflow hints。
-- 更新 admin 使用说明。
+- Lead Inbox 增加 empty/loading/error states。
+- 增加简单 workflow hints：new lead、contacted、proposal sent、won/lost。
+- 更新 admin 使用说明，语言面向普通 owner。
 
 **验收:**
 - CSV export 需要 admin key。
 - CSV 包含 lead 基础字段、status、source、created_at、last_activity。
 - UI 在无数据、错误、加载时可用。
+- Owner 不需要学习 CRM 概念即可完成日常跟进。
 - `npm run build` 和 backend pytest 通过。
 
-## R0.8 Launch Hardening
+## R0.9 Launch Trust
 
-### M0.8 Production Launch
+### M0.9 Production Launch
 
-**目标:** 将官网从本地可演示推进到可上线、可恢复、可监控的生产 MVP。  
-**状态:** Planned  
-**建议开发方式:** I0.8.1-I0.8.3 可以同一批开发，但 review 必须按 security、notification、deployment 三类验收。
+**目标:** 将官网从本地可演示推进到可上线、可恢复、可监控的生产样板网站。
+**状态:** Planned
+**建议开发方式:** I0.9.1-I0.9.3 可以同一批开发，但 review 必须按 notification、security、deployment 三类验收。
 
-### I0.8.1 Notification Adapter and Audit Trail
+### I0.9.1 Notification Adapter and Audit Trail
 
-**Iteration ID:** I0.8.1  
-**目标:** 新 lead 创建后能可靠触发内部通知，并记录成功/失败。  
+**Iteration ID:** I0.9.1
+**目标:** 新 lead 创建后能可靠触发内部通知，并记录成功/失败。
 **状态:** Planned
 
 **范围:**
@@ -450,10 +545,10 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - notification failure 记录为可诊断日志/event。
 - backend pytest 覆盖 success/failure。
 
-### I0.8.2 Security, Rate Limit, Production Config Check
+### I0.9.2 Security, Rate Limit, Production Config Check
 
-**Iteration ID:** I0.8.2  
-**目标:** 降低公开表单、后台和生产配置的基础风险。  
+**Iteration ID:** I0.9.2
+**目标:** 降低公开表单、后台和生产配置的基础风险。
 **状态:** Planned
 
 **范围:**
@@ -469,10 +564,10 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - rate limit 命中时返回明确状态。
 - 后台接口仍全部要求 admin key。
 
-### I0.8.3 Deployment Runbook and Staging Smoke
+### I0.9.3 Deployment Runbook and Staging Smoke
 
-**Iteration ID:** I0.8.3  
-**目标:** 让官网可以按文档稳定部署、验证和回滚。  
+**Iteration ID:** I0.9.3
+**目标:** 让官网可以按文档稳定部署、验证和回滚。
 **状态:** Planned
 
 **范围:**
@@ -485,5 +580,5 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 **验收:**
 - 新环境按 runbook 可初始化数据库和表。
 - backend/frontend 容器 build 通过。
-- staging smoke 覆盖 homepage、form submit、admin dashboard、lead status update。
+- staging smoke 覆盖 homepage、mobile CTA、form submit、Lead Inbox、lead status update。
 - 文档说明如何从 release branch 合并回 `main`。

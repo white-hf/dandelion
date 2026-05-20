@@ -1,11 +1,12 @@
 # 公司官网 PRD
 
-**文档版本:** 1.1  
-**编写日期:** 2026-05-17  
-**产品名称:** Dandelion Growth Systems  
-**产品类型:** 公司官网 + 第一个业务运营闭环 Demo  
+**文档版本:** 1.2
+**编写日期:** 2026-05-17
+**最近更新日期:** 2026-05-20
+**产品名称:** Dandelion Growth Systems
+**产品类型:** 公司官网 + 第一个业务运营闭环 Demo
 **目标用户:** 北美本地服务型 SMB owner / operator
-**相关文档:** [Company Website Subsystems](Company_Website_Subsystems.md), [Agent Readiness Assessment](Agent_Readiness_Assessment.md), [Product Strategy](Product_Strategy.md)
+**相关文档:** [Customer Website Experience Standard](Customer_Website_Experience_Standard.md), [Company Website Subsystems](Company_Website_Subsystems.md), [Agent Readiness Assessment](Agent_Readiness_Assessment.md), [Product Strategy](Product_Strategy.md)
 
 ---
 
@@ -15,7 +16,7 @@
 
 > A website is only useful if it turns visitors into booked jobs, consultations, quote requests, reviews, and follow-up actions.
 
-官网要展示我们如何帮助本地 SMB 把线上流量变成可跟进的业务结果。
+官网要展示我们如何帮助本地 SMB 把线上流量变成可跟进的业务结果。它也必须成为未来客户网站的质量基准：专业、好看、可信、手机端顺畅、CTA 明确、表单简单。
 
 ## 2. 目标
 
@@ -23,16 +24,17 @@
 
 - 让访问者在 30 秒内理解：我们不是普通网站公司。
 - 获取 discovery call 和 free audit 线索。
-- 展示“网站 + 预约/报价 + CRM + review + dashboard”的闭环。
+- 展示“网站 + 预约/报价 + Lead Inbox + review + conversion snapshot”的闭环。
 - 作为 cold outreach 后的落地页，提高回复和预约率。
 - 作为未来行业 Demo 的设计和技术基准。
 
 ### 2.2 产品目标
 
-- 建立一个可复用的 marketing site shell。
+- 建立一个可复用的 high-quality customer website shell。
+- 建立清晰的视觉系统、版式系统和移动端体验标准。
 - 接入 lead capture API。
 - 建立 event tracking。
-- 建立最小 admin view。
+- 建立最小 Lead Inbox。
 - 建立邮件通知流程。
 - 建立一个可演示的轻量运营闭环，作为未来客户网站的标准样板。
 
@@ -84,6 +86,18 @@
 9. Pricing Snapshot
 10. Trust and Local Positioning
 11. Final CTA
+
+## 4.3 网站体验原则
+
+官网必须先像一个优秀客户网站，再像一个产品 Demo。页面体验优先级：
+
+1. 可信：访问者立刻觉得这家公司专业、认真、懂本地 SMB。
+2. 清楚：30 秒内知道服务对象、解决的问题、下一步动作。
+3. 好看：视觉方向明确，不能像模板站或默认组件拼接。
+4. 好用：移动端 CTA、表单、阅读节奏顺畅。
+5. 可转化：每个页面都有明确 primary action，不堆砌功能。
+
+具体设计标准见 [Customer Website Experience Standard](Customer_Website_Experience_Standard.md)。
 
 ## 5. 核心文案
 
@@ -205,6 +219,7 @@ Acceptance criteria:
 - Admin can view lead detail.
 - Admin can update status and notes.
 - Admin is not public.
+- Admin must stay simpler than a CRM. It should help an owner know who to call next, not manage a complex sales pipeline.
 
 ### 6.5 Event Tracking
 
@@ -225,6 +240,14 @@ Acceptance criteria:
 - No unnecessary personal data is stored in analytics events.
 
 ## 7. Non-Functional Requirements
+
+### 7.0 Website Experience Quality
+
+- Visual direction cannot rely on generic SaaS sections, default component styling, or interchangeable cards.
+- Each page must have a clear narrative rhythm: problem, offer, proof, process, action.
+- Mobile viewport is the primary review target, not an afterthought.
+- Forms must feel short and purposeful. Required fields must be defensible by business need.
+- Every visual element must support trust, clarity, or conversion.
 
 ### 7.1 Performance
 
@@ -307,10 +330,10 @@ Production target:
 - Audit Request / Lead Capture
 - Event Tracking
 - Notification System
-- Basic Admin CRM
+- Lead Inbox Lite
 - Booking Integration
 - Demo System
-- Conversion Dashboard
+- Conversion Snapshot
 
 暂不进入 MVP：
 

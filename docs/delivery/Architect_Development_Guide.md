@@ -1,35 +1,53 @@
 # Architect Development Guide
 
-**Version:** 1.0  
-**Date:** 2026-05-19  
-**Active Branch:** `develop/r0.6-dynamic-capability`  
-**Audience:** Architect / implementation agent  
-**Purpose:** Provide execution guidance for the next large development cycle while preserving reviewability, product alignment, and code quality.
+**Version:** 1.1
+**Date:** 2026-05-20
+**Active Branch:** `develop/r0.6-dynamic-capability`
+**Audience:** Architect / implementation agent
+**Purpose:** Provide execution guidance for the next development cycles while preserving reviewability, product alignment, code quality, and website experience quality.
 
 ---
 
-## 1. Development Goal
+## 1. Product Direction Reset
 
-The next large development cycle should move the Dandelion website from a working backend-driven MVP toward a complete lightweight operations product.
+Dandelion must not compete with large SaaS products by adding more features. The product should follow the Google Docs style tradeoff: simple, easy, fast to understand, and good enough for daily SMB work.
+
+The customer website is the core product. Backend modules exist to support website conversion and owner follow-up, not to become a complex CRM.
+
+Every implementation decision must pass three checks:
+
+- Does this make the customer-facing website more professional, trustworthy, beautiful, or easier to use?
+- Does this reduce the SMB owner's operational burden?
+- Does this avoid feature bloat that would make the product feel like a heavy SaaS?
+
+## 2. Development Goal
+
+The next cycles should move the Dandelion website from a working backend-driven MVP toward a professional customer website sample with a lightweight lead follow-up loop.
 
 There are two completion standards:
 
-- **Website Launch MVP:** complete R0.6. This means the public website can be used for sales demos and real lead capture.
-- **Standardized Client Product Baseline:** complete R0.7 and later R0.8. This means the same system can become the reusable foundation for customer websites.
+- **Website Launch MVP:** complete R0.7. This means the public website is not only functional, but also visually professional, mobile-friendly, conversion-oriented, and usable for real sales demos.
+- **Standardized Client Product Baseline:** complete R0.9. This means the same system can become the reusable foundation for customer websites with simple owner follow-up, notifications, security, and deployment readiness.
 
-## 2. Recommended Scope For This Large Iteration
+## 3. Recommended Scope For The Next Development Batch
 
-Develop these iterations together:
+Do not start new R0.8/R0.9 backend expansion until current R0.6 review blockers are closed.
+
+First close the active R0.6 quality issues:
 
 - `I0.6.2 Frontend FormRenderer`
 - `I0.6.3 Schema Seed and Website Migration`
-- `I0.7.1 Lead Detail and Event Timeline`
-- `I0.7.2 Notes, Filters, Pagination`
-- `I0.7.3 CSV Export and Operator Workflow Polish`
 
-Do **not** include R0.8 in the same implementation batch unless explicitly requested. R0.8 includes security, notification provider, deployment, rate limit, backup, and staging concerns. Those should be reviewed separately because they affect production risk.
+Then develop R0.7 as the next major product batch:
 
-## 3. Execution Order
+- `I0.7.1 Visual System and Brand Direction`
+- `I0.7.2 Core Page Experience Polish`
+- `I0.7.3 Industry Website Template: HVAC`
+- `I0.7.4 Mobile and Form Experience QA`
+
+Do **not** include R0.8 Lead Inbox Lite or R0.9 Launch Trust in the same implementation batch unless explicitly requested. Those affect backend operations and production risk and should be reviewed separately.
+
+## 4. Execution Order
 
 ### Step 1: Stabilize API Client Contracts
 
@@ -39,11 +57,6 @@ Required functions:
 
 - `getFormConfig(formKey)`
 - `submitForm(payload)`
-- `getLeadDetail(leadId)`
-- `getLeadTimeline(leadId)`
-- `createLeadNote(leadId, body)`
-- `getLeadNotes(leadId)`
-- `exportLeadsCsv(filters)`
 
 Rules:
 
@@ -111,7 +124,29 @@ Rules:
 - Do not remove existing tracking behavior without replacing it.
 - Do not submit through the old `createLead` path for migrated forms.
 
-### Step 5: Expand Admin CRM
+### Step 5: Build The Website Experience System
+
+This is the main R0.7 work. The implementation agent must act as an architect, product manager, UI designer, and UX reviewer, not just a coder.
+
+Required work:
+
+- Define a stronger visual system for the Dandelion website.
+- Improve Home, Services, Industries, Demo, Pricing, and HVAC page narrative.
+- Make the HVAC page feel like a sellable industry website sample.
+- Review mobile first: hero, navigation, CTA, form, success/error states.
+- Keep the design professional and specific. Avoid generic SaaS cards and default component styling.
+- Use the checklist in `docs/product/Customer_Website_Experience_Standard.md`.
+
+Acceptance rules:
+
+- Every core page must have a clear user journey: problem, offer, proof, process, CTA.
+- Every page must be understandable without a sales explanation.
+- Every form success state must explain the next step.
+- Desktop and mobile screenshots or browser verification notes are required in the handoff summary.
+
+### Step 6: Defer Lead Inbox Lite To R0.8
+
+Do not expand admin features during R0.7 except where needed to keep the current lead loop working. R0.8 will implement the lightweight owner workflow:
 
 Backend capabilities:
 
@@ -135,8 +170,9 @@ Rules:
 - All admin endpoints must require `X-Admin-Key`.
 - Status updates and note creation should create auditable events.
 - CSV export must avoid unnecessary raw event metadata.
+- UI language should say Lead Inbox or Leads, not complex CRM concepts.
 
-## 4. Code-Level Architecture Rules
+## 5. Code-Level Architecture Rules
 
 ### Backend Rules
 
@@ -172,7 +208,8 @@ If an index already exists, do not recreate it in a way that fails on repeated s
 - Keep reusable UI in `clients/dandelion/frontend/components`.
 - Prefer typed payloads and responses.
 - Avoid duplicating form submission logic across forms.
-- Preserve current typography, colors, spacing, and CTA style.
+- Improve typography, colors, spacing, motion, imagery, and CTA style when they are generic or weak.
+- Preserve business clarity and conversion flow while improving visual quality.
 - Do not add a new UI framework unless necessary.
 - Do not introduce global state management for this scope.
 - FormRenderer must support progressive failure states: loading schema, schema error, submitting, submit success, submit error.
@@ -187,9 +224,9 @@ If an index already exists, do not recreate it in a way that fails on repeated s
 - Event metadata should avoid raw email, phone, long notes, or sensitive details.
 - CSV export must be admin-protected.
 
-## 5. Required Tests
+## 6. Required Tests
 
-Backend tests must cover:
+R0.6 backend tests must cover:
 
 - Form schema discovery.
 - Valid generic form submission.
@@ -197,6 +234,9 @@ Backend tests must cover:
 - Invalid select option.
 - Invalid email field.
 - Invalid checkbox field.
+
+R0.8 backend tests must cover when Lead Inbox Lite is in scope:
+
 - Lead detail unauthorized and authorized.
 - Lead timeline unauthorized and authorized.
 - Note create/list unauthorized and authorized.
@@ -208,7 +248,9 @@ Frontend validation must include:
 - `npm run build`.
 - At least one migrated page renders with `FormRenderer`.
 - FormRenderer displays backend `422` errors.
-- Admin page builds with new detail/timeline/note/export UI.
+- Core pages render with improved website experience.
+- Mobile viewport smoke covers homepage, HVAC page, audit form, and quote form.
+- Admin page builds if touched.
 
 Real client app smoke must include:
 
@@ -219,22 +261,23 @@ Real client app smoke must include:
 - HVAC form valid submit creates lead/event.
 - Invalid checkbox/select/email returns visible frontend error.
 - Admin dashboard loads with `X-Admin-Key`.
-- Lead detail and timeline load with `X-Admin-Key`.
+- Lead detail and timeline load with `X-Admin-Key` only when R0.8 is in scope.
 
-## 6. Review Packaging Requirements
+## 7. Review Packaging Requirements
 
 Even if implementation is done in one large batch, package evidence by iteration:
 
 - `I0.6.2` evidence: FormRenderer component, API client, frontend build.
 - `I0.6.3` evidence: schema seed, Audit/HVAC migration, real submit smoke.
-- `I0.7.1` evidence: lead detail and timeline API/UI.
-- `I0.7.2` evidence: notes, filters, pagination.
-- `I0.7.3` evidence: CSV export and admin UX polish.
+- `I0.7.1` evidence: visual system changes, before/after notes, desktop/mobile screenshots.
+- `I0.7.2` evidence: core page narrative and CTA improvements.
+- `I0.7.3` evidence: HVAC industry website sample and quote flow.
+- `I0.7.4` evidence: mobile/form QA checklist and browser verification.
 
 Create a short implementation summary before asking for review:
 
 ```text
-docs/delivery/summaries/R0.6-R0.7-implementation-summary.md
+docs/delivery/summaries/R0.6-R0.7-website-experience-summary.md
 ```
 
 The summary must include:
@@ -247,7 +290,7 @@ The summary must include:
 - Known limitations.
 - Any intentionally deferred R0.8 work.
 
-## 7. Branch and Commit Rules
+## 8. Branch and Commit Rules
 
 - Work on `develop/r0.6-dynamic-capability` unless a task branch is explicitly created.
 - Do not commit directly to `main`.
@@ -256,7 +299,7 @@ The summary must include:
 - Do not mark an iteration `Completed` yourself unless review has passed.
 - It is acceptable to mark implementation as `Ready for Review`.
 
-## 8. Definition of Done For Architect Handoff
+## 9. Definition of Done For Architect Handoff
 
 The handoff is ready for review only when:
 
