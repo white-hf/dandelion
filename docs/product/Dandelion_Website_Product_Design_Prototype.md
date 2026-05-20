@@ -5,7 +5,8 @@
 **对象:** Dandelion Growth Systems 官网客户方案
 **角色假设:** 你是客户，我作为产品经理、网站架构师、UI/UX 设计师交付方案供 review。
 **相关文档:** [Product Strategy](Product_Strategy.md), [Company Website PRD](Company_Website_PRD.md), [Customer Website Experience Standard](Customer_Website_Experience_Standard.md)
-**高保真原型:** [Dandelion Homepage High-Fidelity Prototype](prototypes/dandelion-homepage-high-fidelity.html)
+**高保真原型:** [Dandelion Multipage High-Fidelity Prototype](prototypes/dandelion-multipage/index.html)
+**历史方向稿:** [Dandelion Homepage High-Fidelity Prototype](prototypes/dandelion-homepage-high-fidelity.html)
 
 ---
 
@@ -103,6 +104,22 @@ Primary CTA: Free Growth Audit
 | Demo | 展示访客到 owner 跟进闭环 | Walk Through the Loop |
 | Pricing | 降低购买不确定性 | Start With an Audit |
 | Privacy | 建立数据使用信任 | Contact Us |
+
+### 4.1 高保真原型信息架构说明
+
+当前正式 review 原型采用多页面结构，入口为 [Dandelion Multipage High-Fidelity Prototype](prototypes/dandelion-multipage/index.html)。
+
+上一版 [Dandelion Homepage High-Fidelity Prototype](prototypes/dandelion-homepage-high-fidelity.html) 只作为视觉方向稿保留。它把 HVAC、Demo、Pricing、Audit 等关键模块放在同一页，是为了快速验证视觉语言和叙事节奏，不代表最终真实信息架构。
+
+正式网站应按以下页面拆分：
+
+- `Home`: 定位、信任、核心闭环、行业入口、audit CTA。
+- `Services`: 服务交付内容和 Own/Integrate/Avoid 边界。
+- `Industries`: 行业入口和行业化复用逻辑。
+- `HVAC`: 第一个独立行业样板页。
+- `Demo`: 访客到 owner follow-up 的完整演示。
+- `Pricing`: 简化套餐选择，引导 audit。
+- `Audit`: 独立转化流程。
 
 ## 5. 首页 UI 原型
 

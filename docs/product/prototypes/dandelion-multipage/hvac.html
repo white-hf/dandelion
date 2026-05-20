@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dandelion | HVAC Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="index.html"><span class="brand-mark">Dandelion</span><span class="brand-sub">Growth Systems</span></a>
+        <nav class="nav-links"><a href="services.html">Services</a><a href="industries.html">Industries</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a></nav>
+        <a class="btn btn-dark" href="audit.html">Build my quote loop</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="container hero">
+        <div>
+          <span class="eyebrow"><span class="eyebrow-dot"></span>HVAC website sample</span>
+          <h1>HVAC websites that turn service searches into quote-ready leads.</h1>
+          <p class="lede">
+            Built for repair, installation, maintenance, and emergency service teams that need clear quote requests and
+            faster follow-up without heavy field-service software.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#quote">Request a Quote Demo →</a>
+            <a class="btn btn-secondary" href="demo.html">See owner view</a>
+          </div>
+        </div>
+        <aside class="panel">
+          <div class="dark-card">
+            <div class="dark-card-inner">
+              <p class="label">Emergency request preview</p>
+              <h2>Fast context before the callback.</h2>
+              <div class="mini-list">
+                <div class="mini-row"><span>Service type</span><strong>Repair</strong></div>
+                <div class="mini-row"><span>Urgency</span><strong>Today</strong></div>
+                <div class="mini-row"><span>Property</span><strong>Home</strong></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="container section">
+        <div class="grid-4">
+          <article class="card"><h3>Repair</h3><p>Make urgent issues easy to describe and submit.</p></article>
+          <article class="card"><h3>Installation</h3><p>Collect project type, timeline, and contact details.</p></article>
+          <article class="card"><h3>Maintenance</h3><p>Support seasonal tune-up and recurring service inquiries.</p></article>
+          <article class="card dark"><h3>Emergency</h3><p>Prioritize fast callback and owner notification.</p></article>
+        </div>
+      </section>
+
+      <section id="quote" class="container section">
+        <div class="section-head">
+          <div><p class="label">HVAC quote form</p><h2 class="section-title">Short enough to complete, useful enough to call back.</h2></div>
+          <p class="section-text">The form collects the minimum viable service context, then sends the owner a clear next action.</p>
+        </div>
+        <form class="form-card">
+          <div class="form-grid">
+            <div class="field"><label>Name *</label><input placeholder="Alex Morgan" /></div>
+            <div class="field"><label>Phone *</label><input placeholder="902-555-0123" /></div>
+            <div class="field"><label>Email</label><input placeholder="alex@example.com" /></div>
+            <div class="field"><label>Service type *</label><select><option>Repair</option><option>Installation</option><option>Maintenance</option><option>Emergency</option></select></div>
+            <div class="field"><label>Urgency *</label><select><option>Today</option><option>This week</option><option>Planning ahead</option></select></div>
+            <div class="field"><label>Property type</label><select><option>Home</option><option>Rental</option><option>Commercial</option></select></div>
+            <div class="field full"><label>What is happening?</label><textarea placeholder="AC stopped cooling this morning."></textarea></div>
+          </div>
+          <label class="consent"><input type="checkbox" checked /><span>I agree to be contacted about this quote request.</span></label>
+          <button class="btn btn-primary" type="button">Request Quote Demo →</button>
+        </form>
+      </section>
+    </main>
+
+    <a class="mobile-sticky" href="#quote">Request Quote Demo</a>
+    <footer class="footer">HVAC industry page prototype.</footer>
+  </body>
+</html>
