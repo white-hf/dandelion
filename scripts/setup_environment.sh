@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/Users/whitetang/Desktop/work/website"
 DB_NAME="dandelion_website_db"
 DB_USER="website_user"
 DB_PASS="user@Halifax"
 MYSQL_BIN="/usr/local/mysql/bin/mysql"
-MIGRATION_DIR="${PROJECT_ROOT}/packages/backend/dandelion_core/database/migrations"
+MIGRATION_DIR="/Users/whitetang/Desktop/work/website/packages/backend/dandelion_core/database/migrations"
 ADMIN_KEY="dandelion_admin_secret_2026"
 
-echo "Starting Automated Deployment for Dandelion Platform..."
+echo "Running Setup..."
 
-read -sp "MySQL root password: " ROOT_PASS
-echo ""
+# Get Root Password safely
+if [ -z "${ROOT_PASS:-}" ]; then
+    read -sp "MySQL root password: " ROOT_PASS
+    echo ""
+fi
 
+# 1. DB & User
 $MYSQL_BIN -h127.0.0.1 -uroot -p"${ROOT_PASS}" <<DBEOF
 CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS "${DB_USER}"@"127.0.0.1" IDENTIFIED BY "${DB_PASS}";
@@ -23,13 +26,11 @@ GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO "${DB_USER}"@"localhost";
 FLUSH PRIVILEGES;
 DBEOF
 
-echo "Schema Migration..."
-for sql_file in "${MIGRATION_DIR}"/*.sql; do
-    echo "Applying $(basename "$sql_file")..."
-    $MYSQL_BIN -h127.0.0.1 -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "$sql_file"
-done
+# 2. Migrations
+$MYSQL_BIN -h127.0.0.1 -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "${MIGRATION_DIR}/0001_initial_schema.sql"
+$MYSQL_BIN -h127.0.0.1 -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "${MIGRATION_DIR}/0002_form_configs.sql"
 
-echo "Ensuring Indices..."
+# 3. Indices
 INDEX_CMDS=(
     "CREATE INDEX idx_leads_last_activity ON leads (last_activity_at DESC);"
     "CREATE INDEX idx_leads_status_activity ON leads (status, last_activity_at DESC);"
@@ -45,19 +46,14 @@ INDEX_CMDS=(
     "CREATE INDEX idx_lead_notes_lead_created ON lead_notes (lead_id, created_at DESC);"
     "CREATE INDEX idx_notification_logs_status_retry ON notification_logs (status, next_retry_at);"
     "CREATE INDEX idx_notification_logs_lead_created ON notification_logs (lead_id, created_at DESC);"
+    "CREATE INDEX idx_form_configs_industry ON form_configs (industry);"
 )
-
 for cmd in "${INDEX_CMDS[@]}"; do
     $MYSQL_BIN -h127.0.0.1 -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "$cmd" 2>/dev/null || true
 done
 
-CLIENT_ENV_FILE="/Users/whitetang/Desktop/work/website/clients/dandelion/backend/.env"
-mkdir -p "/Users/whitetang/Desktop/work/website/clients/dandelion/backend"
-printf "PROJECT_NAME="Dandelion Software"
-DATABASE_URL="mysql+pymysql://${DB_USER}:user%40Halifax@127.0.0.1/${DB_NAME}"
-ADMIN_API_KEY="${ADMIN_KEY}"
-ENV=development
-PORT=8000
-" > "${CLIENT_ENV_FILE}"
+# 4. .env
+ENV_FILE="/Users/whitetang/Desktop/work/website/clients/dandelion/backend/.env"
+printf "PROJECT_NAME=\"Dandelion Software\"\nDATABASE_URL=\"mysql+pymysql://${DB_USER}:user%%40Halifax@127.0.0.1/${DB_NAME}\"\nADMIN_API_KEY=\"${ADMIN_KEY}\"\nENV=development\nPORT=8000\n" > "${ENV_FILE}"
 
-echo "Deployment Automation Complete!"
+echo "Done."

@@ -4,7 +4,6 @@
   Target: MySQL (Production Baseline)
 */
 
--- Table: leads
 CREATE TABLE IF NOT EXISTS leads (
     lead_id VARCHAR(36) PRIMARY KEY,
     created_at DATETIME NOT NULL,
@@ -37,7 +36,6 @@ CREATE TABLE IF NOT EXISTS leads (
     archived_at DATETIME
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: events
 CREATE TABLE IF NOT EXISTS events (
     event_id VARCHAR(36) PRIMARY KEY,
     event_type VARCHAR(255) NOT NULL,
@@ -52,11 +50,10 @@ CREATE TABLE IF NOT EXISTS events (
     campaign VARCHAR(255),
     module_source VARCHAR(255),
     form_key VARCHAR(255),
-    metadata JSON NOT NULL,
+    metadata JSON NOT NULL, -- P0-2 fix: restore metadata column
     CONSTRAINT fk_events_lead_id FOREIGN KEY (lead_id) REFERENCES leads (lead_id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: lead_notes
 CREATE TABLE IF NOT EXISTS lead_notes (
     note_id VARCHAR(36) PRIMARY KEY,
     lead_id VARCHAR(36) NOT NULL,
@@ -67,7 +64,6 @@ CREATE TABLE IF NOT EXISTS lead_notes (
     CONSTRAINT fk_notes_lead_id FOREIGN KEY (lead_id) REFERENCES leads (lead_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: notification_logs
 CREATE TABLE IF NOT EXISTS notification_logs (
     notification_id VARCHAR(36) PRIMARY KEY,
     lead_id VARCHAR(36),
@@ -87,9 +83,3 @@ CREATE TABLE IF NOT EXISTS notification_logs (
     CONSTRAINT fk_notif_lead_id FOREIGN KEY (lead_id) REFERENCES leads (lead_id) ON DELETE SET NULL,
     CONSTRAINT fk_notif_event_id FOREIGN KEY (event_id) REFERENCES events (event_id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Indices (Wrap in check to avoid failure if they exist)
--- Note: Simplified for baseline. Production baseline assumes clean tables or existing indices are fine.
--- We only create indices if they are NOT in the baseline table definition above.
--- Actually, the baseline table definition above doesn't have them. 
--- I will use a shell loop to run index creation and ignore errors.

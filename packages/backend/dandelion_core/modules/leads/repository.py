@@ -11,7 +11,6 @@ class LeadRepository:
     def create(self, lead_data: LeadCreate) -> Lead:
         db_lead = Lead(**lead_data.model_dump())
         self.session.add(db_lead)
-        # P2-1: repository only flush, don't commit
         self.session.flush()
         self.session.refresh(db_lead)
         return db_lead
@@ -19,14 +18,18 @@ class LeadRepository:
     def get_by_id(self, lead_id: str) -> Lead:
         return self.session.query(Lead).filter(Lead.lead_id == lead_id).first()
 
-    def list_active_leads(self, limit: int = 50, cursor: datetime = None, status: str = None):
+    def list_leads(self, limit: int = 50, cursor: datetime = None, status: str = None, industry: str = None, source: str = None):
         query = self.session.query(Lead).filter(Lead.archived_at == None)
-        
+
         if status:
             query = query.filter(Lead.status == status)
-            
+        if industry:
+            query = query.filter(Lead.industry == industry)
+        if source:
+            query = query.filter(Lead.source == source)
+
         if cursor:
             query = query.filter(Lead.last_activity_at < cursor)
-            
+
         query = query.order_by(desc(Lead.last_activity_at)).limit(limit)
         return query.all()

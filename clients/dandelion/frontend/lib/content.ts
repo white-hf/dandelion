@@ -50,12 +50,12 @@ export const serviceModules = [
     description: "Forms that match the real sales conversation and write submissions into a trackable lead record.",
   },
   {
-    name: "Lead CRM Lite",
-    description: "A small internal view for status, notes, source, and follow-up visibility.",
+    name: "Lead Inbox Lite",
+    description: "A small owner view for new leads, status, notes, source, and the next follow-up action.",
   },
   {
-    name: "Event and Conversion Dashboard",
-    description: "Source, CTA, form, and booking events summarized for monthly optimization.",
+    name: "Conversion Snapshot",
+    description: "Source, CTA, form, and booking events summarized without turning the product into heavy analytics software.",
   },
   {
     name: "Notification Workflow",
@@ -77,8 +77,8 @@ export const pricing = [
   {
     name: "Growth",
     price: "CAD 3,500-7,500 + 249-499/mo",
-    fit: "Service businesses that want quote, booking, review, or CRM-lite workflow support.",
-    includes: ["Everything in Launch", "One operating module", "Conversion dashboard", "Review/follow-up workflow", "Monthly optimization"],
+    fit: "Service businesses that want quote, booking, review, or Lead Inbox workflow support.",
+    includes: ["Everything in Launch", "One operating module", "Conversion snapshot", "Review/follow-up workflow", "Monthly optimization"],
   },
   {
     name: "Premium Ops",

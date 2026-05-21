@@ -1,76 +1,64 @@
-import { industryPacks } from "@/lib/content";
-import { TrackedLink } from "@/components/TrackedLink";
 import { HvacQuoteForm } from "@/components/HvacQuoteForm";
+import { OutcomeCard, PageShell, PremiumButton, ProductPreview, SectionHeader } from "@/components/site/PremiumSite";
 
-const hvac = industryPacks.find((pack) => pack.slug === "hvac")!;
+const serviceTypes = [
+  ["Repair", "Make urgent heating and cooling problems easy to describe and submit."],
+  ["Installation", "Collect project type, timeline, property context, and contact details."],
+  ["Maintenance", "Support seasonal tune-up and recurring service inquiries."],
+  ["Emergency", "Prioritize fast callback, source tracking, and owner notification."],
+];
 
 export default function HvacPage() {
   return (
-    <main className="mx-auto max-w-7xl px-5 py-8">
-      <nav className="flex items-center justify-between py-4">
-        <a href="/" className="font-display text-2xl font-bold text-ink">
-          Dandelion
-        </a>
-        <TrackedLink href="/#audit" className="rounded-full bg-ink px-5 py-3 text-sm font-semibold text-cream">
-          Build my quote loop
-        </TrackedLink>
-      </nav>
-
-      <section className="grid gap-10 py-12 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+    <PageShell ctaHref="#quote" ctaLabel="Request quote demo">
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 pb-16 pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:pt-24">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-ember">{hvac.status}</p>
-          <h1 className="mt-4 font-display text-5xl leading-tight text-ink md:text-7xl">{hvac.name}</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/70">
-            Built for service teams that need quote requests, source tracking, owner notifications, and a visible
-            follow-up queue before they invest in heavy field-service software.
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-copper">HVAC website sample</p>
+          <h1 className="mt-6 font-display text-6xl leading-[0.86] tracking-[-0.085em] text-porcelain md:text-8xl">
+            HVAC websites that turn service searches into quote-ready leads.
+          </h1>
+          <p className="mt-7 max-w-2xl text-lg leading-8 text-porcelain/62">
+            Built for repair, installation, maintenance, and emergency teams that need premium trust, clear quote paths,
+            and faster follow-up without heavy field-service software.
           </p>
-        </div>
-        <div className="rounded-[2.5rem] bg-ink p-6 text-cream shadow-soft">
-          <p className="text-sm uppercase tracking-[0.25em] text-wheat">Primary CTA</p>
-          <h2 className="mt-3 font-display text-4xl">{hvac.primaryCta}</h2>
-          <p className="mt-4 text-cream/70">Every visitor action should become a lead, a source, a status, and a next step.</p>
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        {hvac.painPoints.map((point) => (
-          <div key={point} className="rounded-[2rem] bg-white/65 p-6 shadow-soft">
-            <h2 className="font-display text-2xl text-ink">Pain</h2>
-            <p className="mt-3 text-sm leading-6 text-ink/70">{point}</p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <PremiumButton href="#quote" metadata={{ location: "hvac_hero", label: "quote" }}>
+              Request a Quote Demo
+            </PremiumButton>
+            <PremiumButton href="/demo" variant="secondary" metadata={{ location: "hvac_hero", label: "demo" }}>
+              See owner view
+            </PremiumButton>
           </div>
-        ))}
+        </div>
+        <ProductPreview compact />
       </section>
 
-      <section className="my-12 rounded-[2.5rem] bg-white/65 p-8 shadow-soft">
-        <p className="text-sm font-bold uppercase tracking-[0.25em] text-ember">Workflow</p>
-        <div className="mt-6 grid gap-3 md:grid-cols-5">
-          {hvac.workflow.map((step, index) => (
-            <div key={step} className="rounded-[1.5rem] bg-cream p-4">
-              <span className="text-xs font-bold text-ember">0{index + 1}</span>
-              <h3 className="mt-2 font-display text-xl text-ink">{step}</h3>
-            </div>
+      <section className="mx-auto max-w-7xl px-5 py-20">
+        <SectionHeader
+          eyebrow="Service buying moments"
+          title="The page is designed around how HVAC customers actually ask for help."
+          text="A premium industry page should immediately communicate trust, service clarity, urgency, and the next step."
+        />
+        <div className="mt-10 grid gap-5 md:grid-cols-4">
+          {serviceTypes.map(([title, text], index) => (
+            <OutcomeCard key={title} title={title} text={text} dark={index === 3} />
           ))}
         </div>
       </section>
 
-      <section className="grid gap-8 pb-16 lg:grid-cols-[0.8fr_1.2fr]" id="quote-demo">
+      <section id="quote" className="mx-auto grid max-w-7xl gap-8 px-5 py-20 lg:grid-cols-[0.82fr_1.18fr]">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-ember">Real MVP path</p>
-          <h2 className="mt-3 font-display text-4xl text-ink">This form writes to the same lead loop as the company site.</h2>
-          <p className="mt-4 leading-7 text-ink/70">
-            The fields are industry-specific, but the underlying system is reusable: lead capture, event tracking,
-            notification log, admin queue, and dashboard.
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-copper">Quote request</p>
+          <h2 className="mt-5 font-display text-5xl leading-[0.9] tracking-[-0.07em] text-porcelain md:text-7xl">
+            Short enough to complete. Useful enough to call back.
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-porcelain/62">
+            The fields should collect only the service context needed for a fast, confident callback: type, urgency,
+            property, contact, and a short description.
           </p>
-          <TrackedLink
-            href="/admin"
-            className="mt-6 inline-flex rounded-full border border-ink/20 bg-white/60 px-5 py-3 font-semibold text-ink"
-            metadata={{ industry: "hvac", location: "hvac_page_admin" }}
-          >
-            View admin queue after submit
-          </TrackedLink>
         </div>
         <HvacQuoteForm />
       </section>
-    </main>
+    </PageShell>
   );
 }

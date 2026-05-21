@@ -22,4 +22,6 @@ class Event(Base):
 
     module_source = Column(String(255), nullable=True)
     form_key = Column(String(255), nullable=True)
-    metadata_json = Column(JSON, name="metadata", nullable=False, default=dict)
+
+    # P0-2: Use 'metadata' column name but safe ORM attribute
+    metadata_json = Column("metadata", JSON, nullable=False, default=dict)
