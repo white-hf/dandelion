@@ -62,8 +62,8 @@ Review 使用统一状态：
 | R0.3 Launch Readiness | M0.3 Local/Staging Launch Readiness | I0.3.1 | Completed with Known Blockers | 准备 staging/demo 发布，记录 Docker 环境阻塞。 |
 | R0.4 Industry Pack | M0.4 First Industry Pack: HVAC | I0.4.1 | Completed | 用 HVAC 样板验证行业包复用。 |
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
-| R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | In Progress | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
-| R0.7 Website Experience System | M0.7 Multipage Customer Website Quality | I0.7.1-I0.7.5 | Planned | 基于多页面高保真原型，将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
+| R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | Completed | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
+| R0.7 Website Experience System | M0.7 Multipage Customer Website Quality | I0.7.1-I0.7.5 | Completed | 基于多页面高保真原型，将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
 | R0.8 Operator Simplicity | M0.8 Lead Inbox Lite | I0.8.1-I0.8.3 | Planned | 做最小 owner 跟进工具，不做复杂 CRM。 |
 | R0.9 Launch Trust | M0.9 Production Launch | I0.9.1-I0.9.3 | Planned | 完成通知、安全、部署、备份和 staging smoke，让样板网站可上线。 |
 
@@ -274,6 +274,7 @@ Review 使用统一状态：
 | R0.6-CR-2026-05-19-002 | `docs/delivery/reviews/R0.6-CR-2026-05-19-dynamic-engine-fix.md` | R0.6 | M0.6 | Failed | 不允许进入前端 FormRenderer；必须先修复 select/options 后端校验，并统一 endpoint contract、文档、脚本和测试。 |
 | R0.6-CR-2026-05-19-003 | `docs/delivery/reviews/R0.6-CR-2026-05-19-deep-validation-followup.md` | R0.6 | M0.6 | Failed | select/email 校验、测试和构建已通过；必须先补齐 checkbox boolean 校验。 |
 | R0.6-CR-2026-05-19-004 | `docs/delivery/reviews/R0.6-CR-2026-05-19-checkbox-validation-pass.md` | R0.6 | M0.6 | Passed | I0.6.1 后端动态表单引擎通过；允许进入 I0.6.2 Frontend FormRenderer。 |
+| R0.7-CR-2026-05-21-final-internal-experience-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-final-internal-experience-pass.md` | R0.7 | M0.7 | Passed | R0.6/R0.7 内部体验版闭环通过；允许进入 R0.8 Lead Inbox Lite。 |
 
 ## 6. Review 文档演进规则
 
@@ -325,7 +326,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.6.2
 **目标:** 前端不再为每个行业硬编码表单字段，而是根据 `GET /api/forms/{form_key}` 返回的 schema 动态渲染表单并提交到 `POST /api/forms/submit`。
-**状态:** Planned
+**状态:** Completed
 **前置条件:** I0.6.1 Passed。
 
 **范围:**
@@ -342,11 +343,13 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - `npm run build` 通过。
 - 至少一个真实页面使用 `FormRenderer` 替代硬编码字段。
 
+**完成说明:** 已实现通用 `FormRenderer`，Audit Form 与 HVAC Quote Form 已迁移到 schema-driven 渲染路径；backend pytest、frontend build、56001 内部部署 smoke 均通过。
+
 ### I0.6.3 Schema Seed and Website Migration
 
 **Iteration ID:** I0.6.3
 **目标:** 把 Dandelion 官网自身作为第一个配置化表单客户，完成 Audit Form 与 HVAC Quote Form 的 schema seed、页面迁移和回归验证。
-**状态:** Planned
+**状态:** Completed
 **前置条件:** I0.6.2 完成。
 
 **范围:**
@@ -363,15 +366,19 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 后端 invalid select/email/checkbox 错误能在前端显示。
 - `npm run build` 和 backend pytest 均通过。
 
+**完成说明:** `scripts/seed_form_config.py` 可幂等写入 `audit_request` 与 `hvac_quote`；MySQL 当前 seed 字段数分别为 11 与 8，两个表单经 56001 前端代理提交均返回 `200` 并写入 lead。
+
 ## R0.7 Website Experience System
 
 ### M0.7 Customer Website Quality
 
 **目标:** 把 Dandelion 官网从“功能可演示”升级为“客户愿意购买的专业多页面网站样板”，并沉淀可复用的网站体验标准。
-**状态:** Planned
+**状态:** Completed
 **设计基线:** `docs/product/prototypes/dandelion-multipage/index.html` 及同目录多页面原型。
 **建议开发方式:** 可以让架构师和设计/前端 agent 一次性开发 I0.7.1-I0.7.5，但 review 必须按视觉系统、真实页面结构、行业样板、Demo/Pricing、移动端/表单体验五个 slice 验收。
 **设计原则:** 不和大型 SaaS 拼功能，优先做到像优秀 Google Docs 一样简单、清楚、顺畅。
+
+**完成说明:** 公开页面已按多页面信息架构落地，并完成内部体验版部署验证：`/`、`/services`、`/industries`、`/industries/hvac`、`/demo`、`/pricing`、`/privacy`、`/admin` 均返回 `200`。生产 hardening、通知、备份与 owner 后台极简化进入 R0.8/R0.9。
 
 **页面映射:**
 
@@ -397,7 +404,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.7.1
 **目标:** 将多页面高保真原型中的 `Warm Operator Studio` 视觉系统落地到前端代码，让官网具备专业客户网站的基础视觉质量。
-**状态:** Planned
+**状态:** Completed
 
 **范围:**
 - 从 `prototypes/dandelion-multipage/styles.css` 提取可维护的 design tokens 到 `globals.css` / Tailwind 配置。
@@ -420,7 +427,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.7.2
 **目标:** 按多页面原型实现真实官网信息架构，避免把所有内容堆在首页。
-**状态:** Planned
+**状态:** Completed
 
 **范围:**
 - Home：只承担定位、信任、核心闭环、行业入口和 audit CTA。
@@ -442,7 +449,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.7.3
 **目标:** 按 `hvac.html` 高保真原型，将 HVAC 页面升级为第一个可销售的行业网站样板，而不是单纯功能 demo。
-**状态:** Planned
+**状态:** Completed
 
 **范围:**
 - HVAC 首页式 landing page：service search、emergency、repair、installation、maintenance、quote 场景清楚。
@@ -463,7 +470,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.7.4
 **目标:** 按 `demo.html` 和 `pricing.html` 原型，把 Demo 与 Pricing 变成可销售、可信、不误导的独立页面。
-**状态:** Planned
+**状态:** Completed
 
 **范围:**
 - Demo 页面展示 visitor view、owner view、lead loop，并明确 `real today / configurable / optional later`。
@@ -482,7 +489,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **Iteration ID:** I0.7.5
 **目标:** 按 `audit.html` 原型和 Website QA Checklist，把移动端、audit form、HVAC quote form、成功状态和错误状态提升到可上线质量。
-**状态:** Planned
+**状态:** Completed
 
 **范围:**
 - Mobile navigation、hero、CTA band、form layout QA。
@@ -498,6 +505,8 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 表单成功状态不只是 `success`，必须有下一步说明。
 - Review 引用 [Customer Website Experience Standard](../product/Customer_Website_Experience_Standard.md) 的 checklist。
 - Review 引用 [Dandelion Multipage Prototype](../product/prototypes/dandelion-multipage/index.html) 并说明与原型的 intentional differences。
+
+**完成说明:** 内部体验版已一键部署到 `http://127.0.0.1:56001`，公开路由、动态表单 schema 读取、Audit/HVAC 提交、backend pytest 与 frontend build 均通过。真实浏览器截图 QA 与生产部署 checklist 推迟到 R0.9，不阻塞内部上线体验。
 
 ## R0.8 Operator Simplicity
 
