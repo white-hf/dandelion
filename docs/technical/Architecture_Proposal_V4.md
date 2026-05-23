@@ -1,27 +1,33 @@
 
-# 北美 SMB 业务运营闭环平台 - 架构方案书 (V4.0)
-## AI 驱动的网站、运营自动化与增长交付体系
+# AI Reputation Website Engine - 架构方案书 (V5.0)
+## AI 驱动的口碑资产到专业网站生成、部署与托管体系
 
-**文档版本:** 2.3 (Business Operations Edition)
+**文档版本:** 3.0 (AI Reputation Website Engine Edition)
 **编写日期:** 2026-05-17
+**最近更新日期:** 2026-05-22
 **项目位置:** `/Users/whitetang/Desktop/work/website`
-**核心市场:** 加拿大及美国本地服务型中小企业 (SMB)
-**相关文档:** [Product Strategy](../product/Product_Strategy.md), [Company Website PRD](../product/Company_Website_PRD.md), [Company Website Subsystems](../product/Company_Website_Subsystems.md), [Shared Module System Design](Shared_Module_System_Design.md), [Business Plan](../business/Business_Plan.md)
+**核心市场:** 有真实口碑但没有专业网站的本地服务型 SMB
+**相关文档:** [Product Strategy](../product/Product_Strategy.md), [AI Reputation Website Engine PRD](../product/AI_Reputation_Website_Engine_PRD.md), [Operating Playbook](../business/AI_Reputation_Website_Operating_Playbook.md), [Shared Module System Design](Shared_Module_System_Design.md), [Business Plan](../business/Business_Plan.md)
 
 ---
 
 ## 1. 核心战略理念
 
-本方案从“多客户网站 Demo 托管平台”升级为“北美 SMB 业务运营闭环平台”。网站仍然是客户第一触点，但商业价值不止于页面展示，而是通过软件模块帮助客户完成获客、预约、报价、跟进、评价增长和复购。
+本方案从“北美 SMB 业务运营闭环平台”收窄为更适合一人公司冷启动的 **AI Reputation Website Engine**。
+
+网站仍然是客户第一触点，但第一阶段不追求替换已有强网站，也不构建复杂 SaaS。核心目标是：
+
+> 合规发现无网站但有真实口碑的本地商家，自动生成 unofficial preview website，客户付款授权后正式上线，并由 Dandelion 托管维护。
 
 核心目标：
 
-*   **前台高转化:** 用 Next.js 构建行业化、高信任、移动端优先的网站与 landing page。
-*   **后台轻运营:** 用 FastAPI 提供预约、报价、线索 CRM、评价请求、客户 intake 等可复用模块。
-*   **持续增长:** 用 dashboard 和月度报告帮助客户看到线索、预约、报价、评价和广告转化。
-*   **本地信任:** 采用加拿大/美国部署、隐私意识设计、无障碍最佳实践和本地化文案。
+*   **Prospect Discovery:** 合规记录候选商家、评分、网站状态、行业和联系状态。
+*   **Reputation Analysis:** 将公开且允许使用的信息、operator notes、客户授权素材转化为结构化网站配置。
+*   **Preview Generation:** 基于行业模板生成带 disclaimer 和 noindex 的预览站。
+*   **Activation Workflow:** 客户付款、签署授权、确认信息后切换为正式站点。
+*   **Managed Maintenance:** 托管、表单、备份、监控、小改动和授权内容更新。
 
-技术战略必须服务商业定位：我们不是重造 Wix、GoHighLevel、Jobber、ServiceTitan、Clio 或 Jane，而是在它们之间提供轻量、可配置、可服务化交付的业务闭环。成熟 SaaS 已经解决得很深的领域，优先集成，不优先自研。
+技术战略必须服务商业定位：我们不是重造 Wix、GoHighLevel、Jobber、ServiceTitan，也不是做 Google Maps scraper。我们构建的是可审计、可授权、可部署、可维护的 AI 网站生成流程。
 
 当前架构不采用中心化多租户 SaaS。后台能力应抽象为共享模块库，由每个客户网站项目按需引用并独立部署。详细代码级设计、数据模型和索引见 [Shared Module System Design](Shared_Module_System_Design.md)。
 
@@ -32,25 +38,25 @@
 *   **样式方案:** **Tailwind CSS**
 *   **动画与特效:** **Framer Motion**
 *   **前端产品形态:**
-    *   Marketing Website: 首页、服务页、案例、FAQ、评价、联系方式。
-    *   Conversion Landing Page: 面向 Google Ads / Meta Ads 的单目标转化页。
-    *   Client Portal: 客户 intake、文件上传、预约状态、消息入口。
-    *   Admin Dashboard: 线索、预约、报价、评价请求与转化数据。
-*   **本地化增强:** 
+    *   Dandelion Marketing Website: 对外销售与产品说明。
+    *   Preview Website Renderer: 为 prospect 生成 unofficial preview。
+    *   Activated Customer Website: 客户付款授权后的正式网站。
+    *   Operator Console: prospect、preview、outreach、customer activation 管理。
+*   **本地化增强:**
     *   **多语言支持 (i18n):** 内置 Next-intl，支持加拿大英/法双语切换（满足魁北克省或联邦业务需求）。
     *   **无障碍辅助 (Accessibility):** 采用 WCAG-informed 实践，覆盖语义结构、键盘导航、对比度、表单标签、ARIA 审查。
 
 ### 2.2 业务逻辑层 (Backend)
 *   **API 框架:** **Python FastAPI**
 *   **核心业务模块:**
-    *   Lead API: 表单、电话点击、广告来源、UTM、线索状态。
-    *   Appointment API: 可用时间、预约、取消、重约、提醒。
-    *   Quote API: 行业字段、报价区间、线索评分、商家通知。
-    *   Review API: 服务后索评、私有反馈、Google Review 引导。
-    *   Intake API: 客户资料、文件上传、咨询前问卷。
-    *   Dashboard API: 转化漏斗、月度报告、模块使用数据。
-*   **本地化集成:** 预集成 **Stripe**（支付/订阅）、**Mailgun/SendGrid**（邮件）、未来可接入 Twilio（短信）、Google Calendar、Google Reviews、Google Analytics/Search Console。
-*   **数据原则:** 最小化采集、按租户隔离、敏感字段加密、审计日志、可导出、可删除。
+    *   Prospect API: 候选商家、网站状态、评分、pipeline 状态、suppression。
+    *   Preview Site API: 生成配置、构建状态、smoke 状态、preview URL。
+    *   Content Source API: 记录内容来源、授权状态、平台限制和审核备注。
+    *   Outreach API: 邮件草稿、发送状态、退订、回复记录。
+    *   Activation API: service agreement、content authorization、billing state、launch checklist。
+    *   Lead API: 正式站上线后的表单、电话点击、event 和 lead。
+*   **本地化集成:** Stripe（支付/订阅）、Mailgun/SendGrid（邮件）、未来可接入 Twilio（短信）、Google Business Profile / Places API 仅在合规和授权范围内使用。
+*   **数据原则:** 最小化采集、来源可追踪、授权状态可审计、suppression list、客户数据可导出、可删除。
 *   **边界原则:** 不构建重型派工、工资、库存、医疗 EMR、法律 case management 或复杂会计系统。相关需求通过集成、导出或合作伙伴解决。
 
 ### 2.3 基础设施与部署 (Cloud Infrastructure)
@@ -73,11 +79,67 @@
 *   **运营闭环:** 每个页面必须明确下一步动作，并将动作写入线索系统，避免只有展示没有跟进。
 *   **行业字段:** 不同行业使用不同 intake schema，例如 HVAC 关注房屋类型、设备、紧急程度；律所关注案件类型、时间线、地区；诊所关注服务、保险、自选时间。
 
+## 3.1 AI Reputation Engine 专项规范
+
+### 3.1.1 合规数据采集边界
+
+允许：
+
+*   人工记录公开 business facts，例如名称、类别、城市、电话、是否有网站。
+*   使用官方 API 且遵守其 terms、attribution、retention、display rules。
+*   使用客户付款后提供或授权的照片、评价、logo、服务描述。
+*   使用平台嵌入或链接方式展示第三方资料。
+
+禁止：
+
+*   绕过 Google Maps / Google Business Profile 限制进行 scraping、export 或 cache。
+*   未授权复制第三方平台 reviews/photos 到正式客户网站。
+*   在 preview 中暗示客户已经授权或合作。
+*   自动大规模发送未经审核的营销邮件。
+
+### 3.1.2 Preview Site 安全要求
+
+每个 preview site 必须：
+
+*   `noindex,nofollow`。
+*   显示 unofficial preview disclaimer。
+*   使用 test-mode form。
+*   不发送通知给 prospect。
+*   记录所有内容来源。
+*   支持一键下线或删除。
+
+### 3.1.3 Activated Site 要求
+
+客户付款授权后：
+
+*   移除 preview disclaimer。
+*   更新为正式 privacy notice。
+*   切换 live form。
+*   配置客户通知邮箱/手机号。
+*   确认内容授权状态。
+*   启用 uptime monitor 和备份。
+
 ## 4. 模块化产品架构
 
 ### 4.1 Tenant Layer
 
-每个客户作为一个 tenant：
+V3.0 中有两类对象：`prospect` 和 `customer`。不是每个 prospect 都是客户。
+
+每个 prospect：
+
+*   prospect_id
+*   source
+*   source_url
+*   business_name
+*   category
+*   city/region
+*   website_status
+*   rating/review_count if legally available
+*   compliance_status
+*   outreach_status
+*   do_not_contact
+
+每个 active customer：
 
 *   tenant_id
 *   industry
@@ -98,14 +160,31 @@
 *   notification hooks: 邮件、短信、日历、webhook
 *   reporting events: 用于 dashboard 和月报
 
+新增 V3.0 模块：
+
+| Module | Own / Integrate / Avoid | 说明 |
+| --- | --- | --- |
+| Prospect Discovery | Own | 保存和筛选 prospect，不直接违法抓取 |
+| Website Status Classifier | Own | 判断 no website / weak / social only / good |
+| AI Content Generator | Own | 根据模板和来源生成网站 config |
+| Preview Renderer | Own | 生成 noindex preview site |
+| Outreach Draft Assistant | Own | 生成草稿，人工审核发送 |
+| Email Sending | Integrate | 通过合规邮件工具 |
+| Payment / Subscription | Integrate | Stripe |
+| Google Reviews / Photos | Integrate / Client Authorized | 严格遵守平台规则和授权 |
+| Mass Scraping | Avoid | 平台和法律风险高 |
+| Mass Cold Email Automation | Avoid | spam 和品牌风险高 |
+
 ### 4.3 Template Layer
 
 行业模板不是简单页面模板，而是一组完整业务流程：
 
-*   HVAC: landing page + quote form + lead CRM + follow-up reminder
-*   Clinic: website + appointment + review request + no-show reminder
-*   Law/Immigration: consultation booking + intake form + document upload
-*   Realtor: property lead form + showing request + CRM status pipeline
+*   Cleaning: reputation homepage + services + before/after gallery + request form
+*   Landscaping: seasonal service homepage + gallery + quote CTA
+*   Mobile detailing: package/service homepage + booking request
+*   Beauty/wellness: trust-focused homepage + service menu + appointment request
+*   Pet grooming: friendly local homepage + gallery + appointment request
+*   Generic local service: fallback template for early experiments
 
 ### 4.4 Integration Layer
 
@@ -140,15 +219,16 @@
 
 ## 5. AI 协同开发工作流
 
-1.  **业务诊断:** 分析客户行业、客单价、获客渠道、线索流程、当前运营瓶颈。
-2.  **闭环设计:** 先画出客户从访问、咨询、预约/报价、跟进、成交、评价到复购的流程。
-3.  **模块选择:** 根据业务瓶颈选择 Appointment、Quote、CRM Lite、Review Booster 或 Client Intake。
-4.  **接口契约:** 后端先定义 schema、API、事件和数据权限。
-5.  **前端实现:** 前端基于行业模板实现 marketing pages、conversion flow 和 dashboard。
-6.  **合规自检:** 检查无障碍、隐私声明、cookie/analytics、数据最小化和表单 consent。
-7.  **Demo 交付:** 通过 Cloudflare Tunnel 或 staging URL 发送可体验 Demo。
-8.  **上线监控:** 上线后监控表单、邮件、预约、API、页面速度和错误日志。
-9.  **月度优化:** 基于真实数据优化 CTA、表单长度、landing page、自动化提醒和评价流程。
+1.  **Prospect Discovery:** 按区域和行业发现候选商家。
+2.  **Compliance Filter:** 判断是否允许使用该数据、是否可联系、是否应加入 suppression。
+3.  **Website Status Classification:** 识别 no website、social only、directory only、weak、good。
+4.  **Preview Config Generation:** AI 生成结构化网站 config，不直接写死页面。
+5.  **Content Source Audit:** 每个内容块记录来源和授权状态。
+6.  **Preview Build:** 生成 noindex preview site。
+7.  **Smoke QA:** 自动验证 route、CSS、表单 test mode、disclaimer。
+8.  **Outreach Draft:** AI 生成邮件草稿，人审核后发送。
+9.  **Activation:** 客户签署协议、授权内容、付款，切换 live site。
+10. **Maintenance:** 托管、备份、监控、授权内容更新。
 
 ## 6. 商业竞争力 (North America Edge)
 
@@ -177,23 +257,28 @@
 *   不先构建完整 SaaS 平台，避免在没有客户验证前过度工程化。
 *   具体 MVP 子系统、数据模型和 API contract 以 [Company Website Subsystems](../product/Company_Website_Subsystems.md) 为准。
 
-### Phase 1: Productized Service MVP
+### Phase 1: AI Reputation Website MVP
 
-*   完成 3 个行业 Demo。
-*   搭建 Lead API、Quote API、Appointment API 的最小版本。
-*   每个客户仍可独立 Docker demo，方便销售演示。
-*   完成 Integration Layer 的最小邮件、日历和 analytics 接口。
+*   建立 prospect、preview_site、outreach、activation 数据模型。
+*   完成手动/半自动 prospect import。
+*   完成 website status classifier。
+*   完成 Starter Reputation Site template renderer。
+*   完成 preview deployment + smoke。
+*   完成 outreach draft assistant。
+*   完成 Stripe/payment + authorization checklist 的运营闭环。
 
-### Phase 2: Shared Module Platform
+### Phase 2: Activated Customer Site Platform
 
-*   抽取共用 tenant config、schema config、notification hooks。
-*   建立统一 dashboard。
-*   建立标准上线 checklist 和监控。
-*   增加 webhook/export，让客户可接入现有 SaaS。
+*   正式客户站点支持独立域名、live form、通知和备份。
+*   抽取客户网站 config schema。
+*   增加 email/SMS lead alert。
+*   增加客户授权素材更新 workflow。
+*   增加 operator console。
 
-### Phase 3: Vertical SaaS Readiness
+### Phase 3: Productized Scale
 
-*   当某行业达到 10-20 个付费客户后，判断是否独立 SaaS 化。
-*   增加 self-serve onboarding、billing、role-based access、audit logs。
-*   将服务型交付逐步转为配置型交付。
-*   仅对高复用、高毛利、低合规风险模块 SaaS 化。
+*   当某行业达到 10-20 个付费客户后，固化行业模板。
+*   增加 self-serve client review flow。
+*   增加批量 preview 生成队列。
+*   增加月度 AI update report。
+*   仅对高复用、低风险能力 SaaS 化。

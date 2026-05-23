@@ -1,9 +1,9 @@
 # Release 与迭代计划
 
-**文档版本:** 2.1
+**文档版本:** 3.0
 **首次编写日期:** 2026-05-17
-**最近更新日期:** 2026-05-20
-**当前总目标:** 将 Dandelion Growth Systems 官网实现为第一个专业、优美、易用、可转化的客户网站样板，并用轻量后台支撑线索跟进闭环。
+**最近更新日期:** 2026-05-22
+**当前总目标:** 将 Dandelion 从公司官网 Demo 演进为 AI Reputation Website Engine：合规发现无网站但有真实口碑的本地商家，自动生成 preview website，客户付款授权后正式上线并托管维护。
 
 ---
 
@@ -64,8 +64,8 @@ Review 使用统一状态：
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
 | R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | Completed | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
 | R0.7 Website Experience System | M0.7 Multipage Customer Website Quality | I0.7.1-I0.7.5 | Completed | 基于多页面高保真原型，将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
-| R0.8 Operator Simplicity | M0.8 Lead Inbox Lite | I0.8.1-I0.8.3 | Planned | 做最小 owner 跟进工具，不做复杂 CRM。 |
-| R0.9 Launch Trust | M0.9 Production Launch | I0.9.1-I0.9.3 | Planned | 完成通知、安全、部署、备份和 staging smoke，让样板网站可上线。 |
+| R0.8 AI Reputation Website Engine MVP | M0.8 Prospect-to-Preview Loop | I0.8.1-I0.8.5 | Planned | 完成 prospect 导入、网站状态识别、AI preview config、预览站生成、合规 outreach 草稿。 |
+| R0.9 Customer Activation and Managed Launch | M0.9 Preview-to-Paid-Customer Loop | I0.9.1-I0.9.5 | Planned | 完成合同授权、付款订阅、正式上线、托管监控和首批客户运营闭环。 |
 
 ## 4.1 Completion Standards
 
@@ -88,18 +88,18 @@ Review 使用统一状态：
 
 ### Standard B: 第一个标准化客户产品
 
-目标：官网不只是营销页，而是可以作为客户网站项目的标准交付样板。
+目标：Dandelion 可以把一个无网站但有真实口碑的 prospect 转化为可体验 preview site，并具备购买上线的运营闭环。
 
 必须满足：
 
-- 具备可复用的客户网站体验标准、页面模式和视觉 QA。
-- 配置化表单系统完成前后端闭环。
-- Lead Inbox Lite 能支持线索列表、详情、状态、备注、事件时间线、基础筛选。
-- Notification System 至少支持 mock + SMTP/provider adapter，并记录发送结果。
-- Booking CTA/event tracking 可复用。
-- 支持基础 CSV export，便于小企业离开复杂 SaaS 也能拿到数据。
-- Docker/backend/frontend 部署路径可复现。
-- 上线前具备 rate limit、生产配置检查、备份/恢复 runbook 和 staging smoke。
+- Prospect 数据模型、手动/半自动导入和 website status classifier 可用。
+- Starter Reputation Site 模板可根据 config 生成 noindex preview。
+- Preview site 有 unofficial disclaimer、test-mode form、自动 build/smoke。
+- AI content generator 输出结构化 config，并记录内容来源和授权状态。
+- Outreach draft 可生成，但必须人工审核发送。
+- Operating playbook 覆盖 prospect、preview、outreach、合同、付款、上线和运维。
+- 正式上线前具备 service agreement、content authorization、payment、launch checklist。
+- 至少完成 5 个真实 prospect preview 的内部验证。
 
 对应完成点：R0.9 完成并 review passed。
 
@@ -274,7 +274,7 @@ Review 使用统一状态：
 | R0.6-CR-2026-05-19-002 | `docs/delivery/reviews/R0.6-CR-2026-05-19-dynamic-engine-fix.md` | R0.6 | M0.6 | Failed | 不允许进入前端 FormRenderer；必须先修复 select/options 后端校验，并统一 endpoint contract、文档、脚本和测试。 |
 | R0.6-CR-2026-05-19-003 | `docs/delivery/reviews/R0.6-CR-2026-05-19-deep-validation-followup.md` | R0.6 | M0.6 | Failed | select/email 校验、测试和构建已通过；必须先补齐 checkbox boolean 校验。 |
 | R0.6-CR-2026-05-19-004 | `docs/delivery/reviews/R0.6-CR-2026-05-19-checkbox-validation-pass.md` | R0.6 | M0.6 | Passed | I0.6.1 后端动态表单引擎通过；允许进入 I0.6.2 Frontend FormRenderer。 |
-| R0.7-CR-2026-05-21-final-internal-experience-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-final-internal-experience-pass.md` | R0.7 | M0.7 | Passed | R0.6/R0.7 内部体验版闭环通过；允许进入 R0.8 Lead Inbox Lite。 |
+| R0.7-CR-2026-05-21-final-internal-experience-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-final-internal-experience-pass.md` | R0.7 | M0.7 | Passed | R0.6/R0.7 内部体验版闭环通过；允许进入 R0.8 AI Reputation Website Engine MVP。 |
 | R0.7-CR-2026-05-21-tailwind-v4-remediation-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-tailwind-v4-remediation-pass.md` | R0.7 | M0.7 | Passed with P2 follow-ups | Tailwind v4 样式生成问题已关闭；依赖 pinning 与旧 config 清理进入后续维护。 |
 
 ## 6. Review 文档演进规则
@@ -509,136 +509,237 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 **完成说明:** 内部体验版已一键部署到 `http://127.0.0.1:56001`，公开路由、动态表单 schema 读取、Audit/HVAC 提交、backend pytest 与 frontend build 均通过。真实浏览器截图 QA 与生产部署 checklist 推迟到 R0.9，不阻塞内部上线体验。
 
-## R0.8 Operator Simplicity
+## R0.8 AI Reputation Website Engine MVP
 
-### M0.8 Lead Inbox Lite
+### M0.8 Prospect-to-Preview Loop
 
-**目标:** 让 SMB owner 能用最少操作跟进线索，后台保持像 inbox 一样简单，不做复杂 CRM。
+**目标:** 建立 AI 网站生成引擎的最小闭环：从候选客户记录到 noindex preview website，再到合规 outreach draft。
 **状态:** Planned
-**建议开发方式:** 可以一次性开发 I0.8.1-I0.8.3，但 review 必须检查“是否降低 owner 操作负担”，不能只检查 API 完整性。
+**产品基线:** [AI Reputation Website Engine PRD](../product/AI_Reputation_Website_Engine_PRD.md)
+**运营基线:** [AI Reputation Website Operating Playbook](../business/AI_Reputation_Website_Operating_Playbook.md)
+**建议开发方式:** I0.8.1-I0.8.5 可以分 slice 开发，但每个 slice 必须可独立验证，不允许一次性只提交大而空的框架。
 
-### I0.8.1 Lead Detail and Timeline Lite
+**关键约束:**
+
+- 不做 Google Maps 非法 scraping。
+- 不做自动群发邮件。
+- Preview 必须 noindex、带 unofficial disclaimer、表单 test mode。
+- 每个内容块必须记录 source/authorization 状态。
+- 不进入复杂 CRM 或多租户 SaaS 控制台。
+
+### I0.8.1 Prospect Data Model and Manual Import
 
 **Iteration ID:** I0.8.1
-**目标:** Owner 能从 lead list 进入 lead detail，并看到联系信息、需求、来源和关键事件。
+**目标:** 建立 prospect 数据层和最小 operator 导入能力，支持手动/CSV 导入候选商家。
 **状态:** Planned
 
 **范围:**
-- 后端新增或补齐 lead detail API。
-- 后端提供按 `lead_id` 查询 events 的 timeline API。
-- 前端 Admin 页面支持 lead list -> detail。
-- detail 显示 contact、business、source、custom_fields、status、last_activity。
-- timeline 只展示 owner 需要理解的事件，不展示技术噪音。
+
+- 新增 `prospects` 数据表/ORM/API。
+- 字段覆盖 business name、category、city、source、source_url、website_url、website_status、rating、review_count、phone、email、status、compliance_status、do_not_contact。
+- 新增 CSV/manual import script。
+- Operator 可以列出、筛选、更新 prospect 状态。
+- 建立 suppression/do-not-contact 字段。
 
 **验收:**
-- 无 admin key 不能访问。
-- 有 admin key 可查看 lead detail。
-- lead 相关 events 按时间倒序显示。
-- 页面能回答“我下一步该联系谁、为什么联系”。
-- `npm run build` 和 backend pytest 通过。
 
-### I0.8.2 Notes, Status, Filters
+- 可导入 20 条 prospect seed 数据。
+- 可按 city/category/website_status/status 筛选。
+- `do_not_contact=true` 的 prospect 不进入 outreach 队列。
+- 数据库包含查询索引：`(city, category, website_status, review_count)`、`(status, compliance_status, updated_at)`、`(do_not_contact, status)`。
+- backend pytest 通过。
+
+### I0.8.2 Website Status Classifier and Compliance Gate
 
 **Iteration ID:** I0.8.2
-**目标:** Owner 能完成最小跟进动作：标记状态、写备注、找到未处理线索。
+**目标:** 系统能识别无网站/弱网站/社交页/目录页/已有强网站，并用合规 gate 控制后续流程。
 **状态:** Planned
 
 **范围:**
-- Lead notes API：create/list。
-- Lead list 支持 status、industry、source 筛选。
-- Lead list 支持简单分页。
-- Admin 页面支持添加 note 和更新状态后刷新 timeline。
-- Dashboard summary 与筛选口径一致。
+
+- 实现 website status classifier：`none | weak | social_only | directory_only | good | unknown`。
+- 实现 compliance status：`allowed | review_needed | blocked`。
+- 记录 source notes 和 platform notes。
+- 对 `good`、`blocked`、`do_not_contact` prospect 禁止生成 outreach。
+- 提供 operator review 页面或 API。
 
 **验收:**
-- 可以为 lead 添加 note。
-- status 更新写入 event。
-- note 写入后可在 detail 中显示。
-- 筛选和分页不会暴露未授权数据。
-- 后台 UI 不引入复杂 pipeline、复杂权限或复杂配置。
-- backend pytest 覆盖 notes/status/filter。
 
-### I0.8.3 CSV Export and Owner Workflow Polish
+- 给定样本 URL 能正确分类 website status。
+- `blocked` prospect 不能生成 preview/outreach。
+- `good` prospect 默认不进入 Starter Reputation Site 队列。
+- 所有状态变更写入 event/audit log。
+
+### I0.8.3 Starter Reputation Site Template Renderer
 
 **Iteration ID:** I0.8.3
-**目标:** Owner 可以导出线索，并在后台看到简单的跟进提示。
+**目标:** 建立第一个可复用 Starter Reputation Site 模板，通过结构化 config 生成专业单页网站。
 **状态:** Planned
 
 **范围:**
-- Admin CSV export API。
-- Export 字段限制，避免导出不必要 event metadata。
-- Lead Inbox 增加 empty/loading/error states。
-- 增加简单 workflow hints：new lead、contacted、proposal sent、won/lost。
-- 更新 admin 使用说明，语言面向普通 owner。
+
+- 定义 `site_config` schema。
+- 新增 Starter template renderer。
+- 支持 hero、trust strip、services、review themes、gallery、service area、FAQ、phone CTA、test-mode form、footer disclaimer。
+- 支持行业 style presets：cleaning、landscaping、mobile detailing、beauty/wellness、generic local service。
+- 页面必须移动端优先。
 
 **验收:**
-- CSV export 需要 admin key。
-- CSV 包含 lead 基础字段、status、source、created_at、last_activity。
-- UI 在无数据、错误、加载时可用。
-- Owner 不需要学习 CRM 概念即可完成日常跟进。
-- `npm run build` 和 backend pytest 通过。
 
-## R0.9 Launch Trust
+- 使用静态 config 可生成 3 个不同 preview 页面。
+- 每个 preview 首屏有业务名称、服务类型、电话 CTA、disclaimer。
+- Test-mode form 不发送真实通知。
+- `npm run build` 通过。
 
-### M0.9 Production Launch
+### I0.8.4 AI Content Generator Contract
 
-**目标:** 将官网从本地可演示推进到可上线、可恢复、可监控的生产样板网站。
+**Iteration ID:** I0.8.4
+**目标:** 定义 AI 内容生成 contract，让 agent 输出可审查、可溯源、可渲染的网站 config，而不是直接改页面代码。
 **状态:** Planned
-**建议开发方式:** I0.9.1-I0.9.3 可以同一批开发，但 review 必须按 notification、security、deployment 三类验收。
 
-### I0.9.1 Notification Adapter and Audit Trail
+**范围:**
+
+- 建立 prompt/contract 文档和生成脚本。
+- 输入：prospect facts、industry template、operator notes、allowed content sources。
+- 输出：headline、subheadline、services、trust points、review themes、FAQ、SEO title/description、source notes。
+- 每个字段必须带 `source_type`：public_fact、operator_note、client_provided、generated_inference。
+- 增加内容安全检查：不夸大、不承诺资质、不编造评价、不生成虚假价格。
+
+**验收:**
+
+- 能为 5 条 prospect seed 生成 site_config JSON。
+- 输出 JSON 通过 schema validation。
+- 禁止字段能被检测并拒绝。
+- 生成内容可直接被 I0.8.3 renderer 使用。
+
+### I0.8.5 Preview Deployment, Smoke, and Outreach Draft
+
+**Iteration ID:** I0.8.5
+**目标:** 完成 preview site 自动部署验证，并生成合规 outreach draft。
+**状态:** Planned
+
+**范围:**
+
+- 新增 `preview_sites` 数据表/API。
+- 每个 preview 生成 unique slug 和 preview URL。
+- 部署后自动运行 route smoke、CSS smoke、form test smoke、noindex/disclaimer check。
+- 新增 `outreach_events` draft 状态。
+- AI 生成邮件草稿，但不自动发送。
+
+**验收:**
+
+- 至少 5 个 prospect preview build/smoke passed。
+- 每个 preview 有 noindex 和 unofficial disclaimer。
+- outreach draft 包含身份、preview link、说明、退订/不再联系选项。
+- `blocked`、`do_not_contact`、`good` prospect 不生成 outreach draft。
+
+## R0.9 Customer Activation and Managed Launch
+
+### M0.9 Preview-to-Paid-Customer Loop
+
+**目标:** 将 preview-first 模式补齐为真实可收费业务：客户签署授权、付款订阅、正式上线、托管维护。
+**状态:** Planned
+**建议开发方式:** 先实现 Stripe/test mode 与文档化合同流程，再做正式客户站点 launch automation。
+
+### I0.9.1 Service Agreement and Content Authorization Workflow
 
 **Iteration ID:** I0.9.1
-**目标:** 新 lead 创建后能可靠触发内部通知，并记录成功/失败。
+**目标:** 正式上线前具备合同、授权和内容来源确认流程。
 **状态:** Planned
 
 **范围:**
-- Notification adapter interface。
-- Local mock adapter。
-- SMTP 或 provider adapter 配置入口。
-- Notification logs 与 events 对齐。
-- 失败不阻塞 lead 保存。
+
+- 新增 agreement checklist。
+- 新增 content authorization checklist。
+- 记录 logo/photos/reviews/business info 的授权状态。
+- 客户确认 business facts。
+- Preview 转 active 前必须全部满足。
 
 **验收:**
-- 本地 mock 模式可验证 notification_sent。
-- provider 配置缺失时不导致 500。
-- notification failure 记录为可诊断日志/event。
-- backend pytest 覆盖 success/failure。
 
-### I0.9.2 Security, Rate Limit, Production Config Check
+- 未完成授权不能进入 active launch。
+- 每个内容来源有授权状态。
+- 文档模板覆盖 scope、revision limits、payment、cancellation、no guarantee。
+
+### I0.9.2 Payment and Subscription Setup
 
 **Iteration ID:** I0.9.2
-**目标:** 降低公开表单、后台和生产配置的基础风险。
+**目标:** 建立 setup fee + monthly subscription 的付款流程。
 **状态:** Planned
 
 **范围:**
-- Public form submission rate limit。
-- Admin key 强度检查或生产配置检查。
-- CORS / allowed origin 配置。
-- 禁止生产默认 secret。
-- 明确 error response 不泄露内部信息。
+
+- Stripe test mode 集成或 payment link 流程文档化。
+- 保存 billing state：pending_setup_fee、setup_paid、subscription_active、past_due、cancelled。
+- Launch 前检查 setup fee 和 subscription。
+- 失败付款状态进入 follow-up queue。
 
 **验收:**
-- 缺失生产必需 env 时启动失败或输出明确错误。
-- 默认 development secret 不能用于 production。
-- rate limit 命中时返回明确状态。
-- 后台接口仍全部要求 admin key。
 
-### I0.9.3 Deployment Runbook and Staging Smoke
+- Test customer 能完成模拟付款状态流转。
+- 未付款不能 launch。
+- 文档说明退款、失败付款、暂停站点规则。
+
+### I0.9.3 Activated Site Launch Workflow
 
 **Iteration ID:** I0.9.3
-**目标:** 让官网可以按文档稳定部署、验证和回滚。
+**目标:** 将 preview site 转为正式客户网站。
 **状态:** Planned
 
 **范围:**
-- 更新 Docker Compose / deployment runbook。
-- MySQL migration runbook。
-- Backup/restore runbook。
-- Staging smoke checklist。
-- Release merge checklist。
+
+- 移除 preview disclaimer。
+- 移除 noindex。
+- 切换 live form。
+- 配置客户通知邮箱。
+- 设置 domain/subdomain。
+- 生成 launch checklist。
 
 **验收:**
-- 新环境按 runbook 可初始化数据库和表。
-- backend/frontend 容器 build 通过。
-- staging smoke 覆盖 homepage、mobile CTA、form submit、Lead Inbox、lead status update。
-- 文档说明如何从 release branch 合并回 `main`。
+
+- 通过一条 demo customer 完成 preview -> active site 模拟。
+- Live form 能创建 lead 并发送 mock/provider notification。
+- 生产站不再显示 unofficial preview 文案。
+- launch smoke 覆盖 homepage、form、privacy、mobile CSS。
+
+### I0.9.4 Managed Maintenance Runbook
+
+**Iteration ID:** I0.9.4
+**目标:** 建立托管客户的月度维护流程。
+**状态:** Planned
+
+**范围:**
+
+- Uptime monitor checklist。
+- Form smoke checklist。
+- Backup checklist。
+- Monthly minor update workflow。
+- Client content update authorization workflow。
+- Cancellation/export workflow。
+
+**验收:**
+
+- 有可执行 runbook。
+- 能对 active demo customer 运行月度检查。
+- 取消客户有数据导出和站点下线说明。
+
+### I0.9.5 First 10 Prospects Pilot
+
+**Iteration ID:** I0.9.5
+**目标:** 用真实 Halifax / Atlantic Canada prospects 验证产品和运营流程。
+**状态:** Planned
+
+**范围:**
+
+- 人工审核 20 个候选商家。
+- 生成 10 个合规 preview。
+- 发送最多 10 封人工审核 outreach。
+- 记录回复、异议、点击、转化。
+- 更新模板、价格、邮件、SOP。
+
+**验收:**
+
+- 10 个 preview 均通过 QA。
+- 所有 outreach 均有 compliance record。
+- 至少获得真实市场反馈：回复、拒绝、点击或购买意向。
+- 输出 pilot summary，决定是否进入 R1.0 首批付费客户阶段。
