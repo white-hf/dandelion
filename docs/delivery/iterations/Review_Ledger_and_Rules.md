@@ -16,6 +16,7 @@
 | R0.6-CR-2026-05-19-004 | `docs/delivery/reviews/R0.6-CR-2026-05-19-checkbox-validation-pass.md` | R0.6 | M0.6 | Passed | I0.6.1 后端动态表单引擎通过；允许进入 I0.6.2 Frontend FormRenderer。 |
 | R0.7-CR-2026-05-21-final-internal-experience-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-final-internal-experience-pass.md` | R0.7 | M0.7 | Passed | R0.6/R0.7 内部体验版闭环通过；允许进入 R0.8 AI Reputation Website Engine MVP。 |
 | R0.7-CR-2026-05-21-tailwind-v4-remediation-pass | `docs/delivery/reviews/R0.7-CR-2026-05-21-tailwind-v4-remediation-pass.md` | R0.7 | M0.7 | Passed with P2 follow-ups | Tailwind v4 样式生成问题已关闭；依赖 pinning 与旧 config 清理进入后续维护。 |
+| R0.8-CR-2026-05-23-I0.8.1-prospect-data-model | `docs/delivery/reviews/R0.8-CR-2026-05-23-I0.8.1-prospect-data-model.md` | R0.8 | M0.8 | Failed | 不允许进入 I0.8.2；必须补齐 website_status 筛选、20 条 seed 导入、prospects 测试、脚本密钥处理和数据库验证证据。 |
 
 ## 6. Review 文档演进规则
 
