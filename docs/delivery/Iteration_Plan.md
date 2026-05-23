@@ -64,7 +64,7 @@ Review 使用统一状态：
 | R0.5 Platform Stabilization | M0.5 Shared Module Integration Stabilization | I0.5.1-I0.5.3 | Completed | 修复 shared backend modules 接入后的架构、契约、数据库、测试问题。 |
 | R0.6 Dynamic Form MVP | M0.6 Simple Form System | I0.6.1-I0.6.3 | Completed | 完成配置化表单闭环，但保持访客表单体验简单、短、清楚。 |
 | R0.7 Website Experience System | M0.7 Multipage Customer Website Quality | I0.7.1-I0.7.5 | Completed | 基于多页面高保真原型，将官网升级为专业客户网站样板，沉淀视觉、交互、行业页面和移动端 QA 标准。 |
-| R0.8 AI Reputation Website Engine MVP | M0.8 Prospect-to-Preview Loop | I0.8.1-I0.8.5 | Planned | 完成 prospect 导入、网站状态识别、AI preview config、预览站生成、合规 outreach 草稿。 |
+| R0.8 AI Reputation Website Engine MVP | M0.8 Product Site and Prospect-to-Preview Loop | I0.8.0-I0.8.5 | Planned | 官网改为 AI 网站激活产品站，并完成 prospect 导入、网站状态识别、AI preview config、预览站生成、合规 outreach 草稿。 |
 | R0.9 Customer Activation and Managed Launch | M0.9 Preview-to-Paid-Customer Loop | I0.9.1-I0.9.5 | Planned | 完成合同授权、付款订阅、正式上线、托管监控和首批客户运营闭环。 |
 
 ## 4.1 Completion Standards
@@ -511,11 +511,12 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 
 ## R0.8 AI Reputation Website Engine MVP
 
-### M0.8 Prospect-to-Preview Loop
+### M0.8 Product Site and Prospect-to-Preview Loop
 
-**目标:** 建立 AI 网站生成引擎的最小闭环：从候选客户记录到 noindex preview website，再到合规 outreach draft。
+**目标:** 建立 AI 网站生成引擎的最小闭环：公司官网先讲清楚新产品，再从候选客户记录到 noindex preview website，再到合规 outreach draft。
 **状态:** Planned
 **产品基线:** [AI Reputation Website Engine PRD](../product/AI_Reputation_Website_Engine_PRD.md)
+**技术基线:** [AI Reputation Website Engine Detailed Design](../technical/AI_Reputation_Website_Engine_Detailed_Design.md)
 **运营基线:** [AI Reputation Website Operating Playbook](../business/AI_Reputation_Website_Operating_Playbook.md)
 **建议开发方式:** I0.8.1-I0.8.5 可以分 slice 开发，但每个 slice 必须可独立验证，不允许一次性只提交大而空的框架。
 
@@ -526,6 +527,31 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - Preview 必须 noindex、带 unofficial disclaimer、表单 test mode。
 - 每个内容块必须记录 source/authorization 状态。
 - 不进入复杂 CRM 或多租户 SaaS 控制台。
+
+### I0.8.0 Company Website Repositioning
+
+**Iteration ID:** I0.8.0
+**目标:** 将 Dandelion 官网从“高端客户网站/业务闭环服务”调整为 AI Reputation Website Engine 产品站，明确差异化：Zero-Communication Activation、高质量 preview、轻业务闭环、本地 managed service。
+**状态:** Planned
+
+**范围:**
+
+- Home 首屏改为：`Great reviews, no website? We turn your local reputation into a professional site.`
+- 新增或重构 `How It Works`：Find reputation -> Build preview -> Owner approves -> Launch and maintain。
+- 新增 `Examples` 区块或页面，展示 cleaning、landscaping、detailing、pet grooming 四类高质量 preview 样例。
+- Pricing 页面改为 setup + monthly 模型，解释为什么比 builder 贵、比 agency 便宜。
+- 新增 `Why Not A Builder` 内容：不用注册、不用拖拽、不用开会。
+- 新增 `For Contacted Businesses` 内容：为什么收到 preview、如何删除、如何激活。
+- 新增 `Trust & Legal` 内容：unofficial preview、授权、隐私、退订、内容来源。
+- 降级 HVAC/Lead Inbox Lite 在首页的权重，保留为附加能力或技术证明。
+
+**验收:**
+
+- 访问者 30 秒内能理解 Dandelion 不是 AI builder，而是 done-for-you website activation。
+- 官网没有“可定制任何系统”或暗示自动抓取/自动群发的风险表达。
+- 至少 4 个样例 preview 达到移动端和视觉质量标准。
+- Pricing 文案解释 setup fee 和 monthly fee 价值，但不锁死长期价格。
+- `npm run build` 通过。
 
 ### I0.8.1 Prospect Data Model and Manual Import
 
@@ -548,6 +574,12 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - `do_not_contact=true` 的 prospect 不进入 outreach 队列。
 - 数据库包含查询索引：`(city, category, website_status, review_count)`、`(status, compliance_status, updated_at)`、`(do_not_contact, status)`。
 - backend pytest 通过。
+
+**架构师开发指导:**
+
+- 优先复用 shared backend module 结构，不在 client app 内写死 prospect 逻辑。
+- 第一版可提供 CLI/CSV import，不强制完整 Operator UI。
+- 必须实现索引，不能先“以后再优化”。
 
 ### I0.8.2 Website Status Classifier and Compliance Gate
 
@@ -583,6 +615,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 支持 hero、trust strip、services、review themes、gallery、service area、FAQ、phone CTA、test-mode form、footer disclaimer。
 - 支持行业 style presets：cleaning、landscaping、mobile detailing、beauty/wellness、generic local service。
 - 页面必须移动端优先。
+- Preview 必须比普通模板站更专业，使用 Dandelion R0.7 premium visual system 作为最低基线。
 
 **验收:**
 
@@ -590,6 +623,13 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 每个 preview 首屏有业务名称、服务类型、电话 CTA、disclaimer。
 - Test-mode form 不发送真实通知。
 - `npm run build` 通过。
+
+**架构师开发指导:**
+
+- Renderer 只能吃 `site_config`，不能为每个客户新写页面。
+- 模板组件必须支持 preview 和 active 两种模式。
+- Preview mode 必须强制 noindex、unofficial banner、test form。
+- Active mode 必须要求 authorization 状态。
 
 ### I0.8.4 AI Content Generator Contract
 
@@ -625,6 +665,7 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 部署后自动运行 route smoke、CSS smoke、form test smoke、noindex/disclaimer check。
 - 新增 `outreach_events` draft 状态。
 - AI 生成邮件草稿，但不自动发送。
+- QA agent 必须检查 preview quality blockers：noindex、disclaimer、CSS、form test、false claims。
 
 **验收:**
 
@@ -632,6 +673,12 @@ docs/delivery/reviews/R<release>-CR-<YYYY-MM-DD>-<scope>.md
 - 每个 preview 有 noindex 和 unofficial disclaimer。
 - outreach draft 包含身份、preview link、说明、退订/不再联系选项。
 - `blocked`、`do_not_contact`、`good` prospect 不生成 outreach draft。
+
+**架构师开发指导:**
+
+- Outreach draft 不能调用真实发送 provider。
+- human approval 状态必须存在，不允许代码路径绕过。
+- QA failed 的 preview 不能进入 outreach draft。
 
 ## R0.9 Customer Activation and Managed Launch
 

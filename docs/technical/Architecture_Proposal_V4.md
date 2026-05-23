@@ -2,12 +2,12 @@
 # AI Reputation Website Engine - 架构方案书 (V5.0)
 ## AI 驱动的口碑资产到专业网站生成、部署与托管体系
 
-**文档版本:** 3.0 (AI Reputation Website Engine Edition)
+**文档版本:** 3.1 (AI Reputation Website Engine Edition)
 **编写日期:** 2026-05-17
-**最近更新日期:** 2026-05-22
+**最近更新日期:** 2026-05-23
 **项目位置:** `/Users/whitetang/Desktop/work/website`
 **核心市场:** 有真实口碑但没有专业网站的本地服务型 SMB
-**相关文档:** [Product Strategy](../product/Product_Strategy.md), [AI Reputation Website Engine PRD](../product/AI_Reputation_Website_Engine_PRD.md), [Operating Playbook](../business/AI_Reputation_Website_Operating_Playbook.md), [Shared Module System Design](Shared_Module_System_Design.md), [Business Plan](../business/Business_Plan.md)
+**相关文档:** [Product Strategy](../product/Product_Strategy.md), [AI Reputation Website Engine PRD](../product/AI_Reputation_Website_Engine_PRD.md), [Detailed Design](AI_Reputation_Website_Engine_Detailed_Design.md), [Operating Playbook](../business/AI_Reputation_Website_Operating_Playbook.md), [Shared Module System Design](Shared_Module_System_Design.md), [Business Plan](../business/Business_Plan.md)
 
 ---
 
@@ -30,6 +30,20 @@
 技术战略必须服务商业定位：我们不是重造 Wix、GoHighLevel、Jobber、ServiceTitan，也不是做 Google Maps scraper。我们构建的是可审计、可授权、可部署、可维护的 AI 网站生成流程。
 
 当前架构不采用中心化多租户 SaaS。后台能力应抽象为共享模块库，由每个客户网站项目按需引用并独立部署。详细代码级设计、数据模型和索引见 [Shared Module System Design](Shared_Module_System_Design.md)。
+
+## 1.1 Target System Shape
+
+系统不是单个 AI agent，而是：
+
+> 状态机 + 小型 agent jobs + 人工 gate + 可审计数据模型 + preview renderer。
+
+核心原则：
+
+- Agent 只能推进明确状态，不允许绕过人工 gate。
+- Agent 输出结构化数据，例如 `site_config`，不直接随机修改页面代码。
+- 每一步必须记录 source、status、error、operator decision。
+- Preview 生成可以自动化，outreach 发送和正式上线必须受 gate 控制。
+- 网站质量是产品竞争力，QA agent 失败时必须阻断发送。
 
 ## 2. 技术栈架构 (Localized Tech Stack)
 
@@ -58,6 +72,22 @@
 *   **本地化集成:** Stripe（支付/订阅）、Mailgun/SendGrid（邮件）、未来可接入 Twilio（短信）、Google Business Profile / Places API 仅在合规和授权范围内使用。
 *   **数据原则:** 最小化采集、来源可追踪、授权状态可审计、suppression list、客户数据可导出、可删除。
 *   **边界原则:** 不构建重型派工、工资、库存、医疗 EMR、法律 case management 或复杂会计系统。相关需求通过集成、导出或合作伙伴解决。
+
+### 2.2.1 Backend Module Ownership
+
+架构师应按 shared backend module 方式实现以下模块：
+
+| Module | Package Path 建议 | 责任 |
+| --- | --- | --- |
+| `prospects` | `packages/backend/dandelion_core/modules/prospects` | prospect CRUD、筛选、评分、状态 |
+| `content_sources` | `packages/backend/dandelion_core/modules/content_sources` | 内容来源、授权、平台限制 |
+| `site_configs` | `packages/backend/dandelion_core/modules/site_configs` | 网站配置 JSON、schema validation、版本 |
+| `preview_sites` | `packages/backend/dandelion_core/modules/preview_sites` | preview slug、build/smoke 状态、URL |
+| `outreach` | `packages/backend/dandelion_core/modules/outreach` | outreach draft、人工 approval、发送状态 |
+| `activation` | `packages/backend/dandelion_core/modules/activation` | agreement、authorization、billing、launch checklist |
+| `agent_runs` | `packages/backend/dandelion_core/modules/agent_runs` | agent job 输入输出、日志、错误、耗时 |
+
+第一版不需要复杂队列系统，可以使用 CLI/script + DB 状态。后续再接入 Celery/RQ/Temporal。
 
 ### 2.3 基础设施与部署 (Cloud Infrastructure)
 *   **本地 Demo 环境:** Mac 本地 Docker + Caddy + Cloudflare Tunnel。
@@ -216,6 +246,409 @@ V3.0 中有两类对象：`prospect` 和 `customer`。不是每个 prospect 都�
 | Legal case management | Avoid | 垂直 SaaS 成熟，风险高 |
 | Review request workflow | Own | 本地服务商价值明确，轻量可控 |
 | Email/SMS sending infrastructure | Integrate | 第三方更稳定，合规能力更强 |
+
+## 4.6 Runtime Workflow
+
+完整状态流：
+
+```text
+prospect.discovered
+  -> prospect.qualified
+  -> site_config.generated
+  -> site_config.safety_passed
+  -> preview.build_pending
+  -> preview.qa_passed
+  -> outreach.draft_created
+  -> outreach.human_approved
+  -> outreach.sent
+  -> prospect.interested
+  -> customer.pending_payment
+  -> customer.payment_complete
+  -> customer.authorization_complete
+  -> launch.ready
+  -> customer.active
+  -> maintenance.active
+```
+
+阻断状态：
+
+```text
+prospect.blocked
+prospect.do_not_contact
+site_config.safety_failed
+preview.qa_failed
+outreach.rejected
+customer.payment_failed
+launch.blocked
+maintenance.paused
+```
+
+## 4.7 Agent Job Design
+
+每个 agent job 必须有：
+
+- `agent_run_id`
+- `job_type`
+- `input_json`
+- `output_json`
+- `status`: `pending | running | succeeded | failed | cancelled`
+- `error_message`
+- `started_at`
+- `finished_at`
+- `triggered_by`: `operator | scheduled | system`
+
+### Discovery Agent
+
+输入：
+
+- city/region
+- industry query
+- max results
+- source type
+
+输出：
+
+- prospect candidates
+- source URLs
+- raw facts allowed by source
+
+硬限制：
+
+- 使用官方 API 或人工/CSV 导入。
+- 不做网页 scraping。
+- 不拉取 review text/photos，除非来源和授权允许。
+
+### Qualification Agent
+
+输入：prospect facts。
+
+输出：
+
+- website_status
+- score
+- compliance_status
+- score_reasons
+
+规则：
+
+- `good` website 默认不进入 Starter outreach。
+- `blocked` / `do_not_contact` 永不进入 preview 或 outreach。
+
+### Site Config Agent
+
+输入：
+
+- prospect
+- content_sources
+- industry preset
+- style preset
+- operator notes
+
+输出：
+
+- `site_config_json`
+- content source map
+- missing info list
+
+硬限制：
+
+- 输出 JSON，不能直接改 React/HTML 文件。
+- 每个生成字段必须有 `source_type`。
+- 不允许生成未验证资质、价格、保证和合作关系。
+
+### Safety Agent
+
+输入：site_config。
+
+输出：
+
+- safety status
+- findings
+- blocked fields
+
+检查：
+
+- false claims
+- unauthorized reviews/photos
+- missing preview disclaimer
+- legal/regulatory-sensitive language
+- excessive marketing claims
+
+### Preview Build Agent
+
+输入：approved site_config。
+
+输出：
+
+- preview slug
+- preview URL
+- build status
+- artifact path
+
+要求：
+
+- noindex。
+- unofficial disclaimer。
+- test-mode form。
+
+### QA Agent
+
+输入：preview URL。
+
+输出：
+
+- route status
+- CSS token check
+- noindex check
+- disclaimer check
+- form test result
+- mobile smoke note
+
+任一 P0 失败，不允许生成 outreach approval。
+
+### Outreach Draft Agent
+
+输入：prospect + preview URL。
+
+输出：
+
+- subject
+- body
+- compliance checklist
+
+限制：
+
+- 只生成 draft。
+- 不自动发送。
+- 必须进入 human approval。
+
+### Activation Agent
+
+输入：customer、payment、authorization、preview。
+
+输出：
+
+- launch checklist status
+- production config
+- active site URL
+
+要求：
+
+- agreement accepted。
+- content authorization complete。
+- setup fee paid。
+- subscription active or payment plan approved。
+- live form destination confirmed。
+
+## 4.8 Detailed Data Model
+
+### prospects
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | UUID |
+| business_name | varchar(255) | idx | |
+| category | varchar(120) | idx | |
+| city | varchar(120) | composite | |
+| region | varchar(120) | composite | |
+| source | varchar(80) | idx | `google_places_api`, `manual`, `directory` |
+| source_url | text | | |
+| place_id | varchar(255) | unique nullable | official API id when available |
+| website_url | text | | |
+| website_status | varchar(40) | composite | `none`, `weak`, `social_only`, `directory_only`, `good`, `unknown` |
+| rating | decimal(3,2) | idx | nullable |
+| review_count | int | idx | nullable |
+| photo_count | int | | nullable |
+| phone | varchar(60) | | business phone |
+| email | varchar(255) | | nullable |
+| status | varchar(60) | composite | pipeline status |
+| compliance_status | varchar(60) | composite | `allowed`, `review_needed`, `blocked` |
+| score | int | idx | |
+| score_reasons | text | | |
+| do_not_contact | boolean | composite | |
+| created_at | datetime | idx | |
+| updated_at | datetime | idx | |
+
+Indexes:
+
+- `idx_prospects_geo_category_status (city, region, category, website_status)`
+- `idx_prospects_score (score, review_count, rating)`
+- `idx_prospects_pipeline (status, compliance_status, updated_at)`
+- `idx_prospects_suppression (do_not_contact, status)`
+- `ux_prospects_place_id (place_id)`
+
+### content_sources
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| prospect_id | char(36) | fk, idx | |
+| customer_id | char(36) | fk nullable, idx | |
+| source_type | varchar(60) | idx | public_fact/operator_note/client_provided/api/embedded_link |
+| source_url | text | | |
+| field_key | varchar(120) | idx | e.g. `headline`, `photo`, `trust_point` |
+| value_json | json | | allowed extracted data |
+| authorization_status | varchar(60) | idx | not_required/pending/approved/rejected |
+| platform_policy_notes | text | | |
+| created_at | datetime | idx | |
+
+Index:
+
+- `idx_content_sources_entity (prospect_id, field_key, authorization_status)`
+
+### site_configs
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| prospect_id | char(36) | fk, idx | |
+| customer_id | char(36) | fk nullable, idx | |
+| version | int | | increment |
+| template_key | varchar(80) | idx | |
+| style_key | varchar(80) | idx | |
+| config_json | json | | full render config |
+| source_map_json | json | | maps fields to content_sources |
+| safety_status | varchar(40) | idx | pending/passed/failed |
+| status | varchar(40) | idx | draft/approved/archived |
+| created_at | datetime | idx | |
+| updated_at | datetime | idx | |
+
+Index:
+
+- `idx_site_configs_lookup (prospect_id, status, version)`
+
+### preview_sites
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| prospect_id | char(36) | fk, idx | |
+| site_config_id | char(36) | fk, idx | |
+| slug | varchar(160) | unique | |
+| preview_url | text | | |
+| build_status | varchar(40) | idx | pending/passed/failed |
+| smoke_status | varchar(40) | idx | pending/passed/failed |
+| qa_report_json | json | | |
+| noindex | boolean | | must be true for preview |
+| disclaimer_present | boolean | | |
+| form_mode | varchar(40) | | test/live |
+| created_at | datetime | idx | |
+| updated_at | datetime | idx | |
+
+Index:
+
+- `idx_preview_sites_status (build_status, smoke_status, updated_at)`
+
+### outreach_events
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| prospect_id | char(36) | fk, idx | |
+| preview_site_id | char(36) | fk, idx | |
+| channel | varchar(40) | idx | email/manual |
+| status | varchar(40) | idx | draft/approved/sent/replied/rejected/unsubscribed |
+| subject | varchar(255) | | |
+| body | text | | |
+| approved_by | varchar(120) | | operator |
+| sent_at | datetime | idx | |
+| reply_at | datetime | idx | |
+| unsubscribe_at | datetime | idx | |
+
+Index:
+
+- `idx_outreach_pipeline (status, sent_at, reply_at)`
+
+### customers
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| prospect_id | char(36) | fk, unique | |
+| business_name | varchar(255) | idx | |
+| plan_key | varchar(80) | idx | starter/local_pro/lead_ready |
+| billing_status | varchar(60) | idx | pending/active/past_due/cancelled |
+| activation_status | varchar(60) | idx | pending_payment/pending_auth/launch_ready/active/paused |
+| domain | varchar(255) | idx nullable | |
+| notification_email | varchar(255) | | |
+| created_at | datetime | idx | |
+| updated_at | datetime | idx | |
+
+### activation_checklists
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| customer_id | char(36) | fk, idx | |
+| agreement_accepted | boolean | | |
+| content_authorized | boolean | | |
+| setup_fee_paid | boolean | | |
+| subscription_active | boolean | | |
+| business_facts_confirmed | boolean | | |
+| domain_ready | boolean | | |
+| live_form_ready | boolean | | |
+| launch_status | varchar(60) | idx | blocked/ready/launched |
+| updated_at | datetime | idx | |
+
+### agent_runs
+
+| Column | Type | Index | Notes |
+| --- | --- | --- | --- |
+| id | char(36) | pk | |
+| job_type | varchar(80) | idx | |
+| entity_type | varchar(80) | idx | prospect/site_config/preview |
+| entity_id | char(36) | idx | |
+| status | varchar(40) | idx | |
+| input_json | json | | |
+| output_json | json | | |
+| error_message | text | | |
+| triggered_by | varchar(80) | idx | operator/scheduled/system |
+| started_at | datetime | idx | |
+| finished_at | datetime | idx | |
+
+## 4.9 API Contracts
+
+Minimal internal API:
+
+```text
+GET    /api/operator/prospects
+POST   /api/operator/prospects/import
+PATCH  /api/operator/prospects/{id}
+POST   /api/operator/prospects/{id}/qualify
+
+POST   /api/operator/site-configs/generate
+GET    /api/operator/site-configs/{id}
+POST   /api/operator/site-configs/{id}/safety-check
+
+POST   /api/operator/previews
+GET    /api/operator/previews/{id}
+POST   /api/operator/previews/{id}/smoke
+
+POST   /api/operator/outreach/draft
+PATCH  /api/operator/outreach/{id}/approve
+PATCH  /api/operator/outreach/{id}/mark-sent
+
+POST   /api/operator/customers/from-prospect/{prospect_id}
+GET    /api/operator/customers/{id}/activation-checklist
+PATCH  /api/operator/customers/{id}/activation-checklist
+POST   /api/operator/customers/{id}/launch
+```
+
+Public preview/customer routes:
+
+```text
+GET    /preview/{slug}
+POST   /api/public/preview/{slug}/form-test
+GET    /sites/{customer_slug}
+POST   /api/public/sites/{customer_slug}/lead
+```
+
+Security:
+
+- Operator API requires `X-Admin-Key` or future operator auth.
+- Preview public pages require no auth but must be noindex.
+- Public forms must rate limit.
+- Launch APIs must enforce activation checklist.
 
 ## 5. AI 协同开发工作流
 

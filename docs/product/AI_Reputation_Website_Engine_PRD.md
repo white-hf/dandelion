@@ -1,10 +1,11 @@
 # AI Reputation Website Engine PRD
 
-**文档版本:** 1.0
+**文档版本:** 1.1
 **创建日期:** 2026-05-22
+**最近更新日期:** 2026-05-23
 **Owner:** Dandelion
 **状态:** Draft for Development
-**相关文档:** [Product Strategy](Product_Strategy.md), [Business Operations Playbook](../business/AI_Reputation_Website_Operating_Playbook.md), [Architecture Proposal V4](../technical/Architecture_Proposal_V4.md), [Iteration Plan](../delivery/Iteration_Plan.md)
+**相关文档:** [Product Strategy](Product_Strategy.md), [Business Operations Playbook](../business/AI_Reputation_Website_Operating_Playbook.md), [Architecture Proposal V4](../technical/Architecture_Proposal_V4.md), [Detailed Design](../technical/AI_Reputation_Website_Engine_Detailed_Design.md), [Iteration Plan](../delivery/Iteration_Plan.md)
 
 ---
 
@@ -15,6 +16,24 @@
 第一版必须完成：
 
 > 从合规发现潜在客户，到生成 preview site，到部署验证，到发送合规 outreach，到客户付款授权后正式上线的最小闭环。
+
+## 1.1 Competitive Positioning
+
+市场已有 AI website builder、Google Business Profile to website 工具和 reputation management 平台。Dandelion 不以“AI 生成网站”作为唯一卖点，而以以下组合形成差异：
+
+1. **Zero-Communication Activation:** 客户不需要注册 builder、不需要填长问卷、不需要参加 discovery call。Dandelion 先生成高质量 preview，客户只需授权、付款和确认上线。
+2. **High-Quality Local Design:** Preview 必须明显高于低价固定模板和普通 AI 生成页，面向本地服务商的真实移动端体验、照片、信任模块和 CTA。
+3. **Built-in Business Loop:** 网站不是纯展示页，Starter 也必须有电话 CTA、request form、test submission、lead capture 记录和托管监控；Growth 再增加 SMS/email alert、AI lead summary 和 simple inbox。
+4. **Local Managed Service:** Dandelion 不是让客户自己操作工具，而是替客户完成上线、域名、表单、托管、维护和小更新。
+5. **Compliance Trust:** Preview 明确 unofficial，正式上线前必须授权内容，不做非法 scraping 或自动 spam。
+
+对外表达：
+
+> We build the preview first. You only approve and launch.
+
+中文：
+
+> 我们先把网站预览做好。你只需要授权和上线。
 
 ## 2. Users
 
@@ -53,6 +72,26 @@
 当我寻找客户时，我希望系统能合规识别高潜力商家、生成 preview、部署验证并准备个性化 outreach，这样我可以用一人公司的成本运营建站业务。
 
 ## 4. MVP Scope
+
+### 4.0 Company Website Repositioning
+
+Dandelion 官网必须同步改为产品站，而不是传统 agency 服务站。
+
+必备页面/区块：
+
+- Home: `Great reviews, no website? We turn your local reputation into a professional site.`
+- How It Works: Find reputation -> Build preview -> Owner approves -> Launch and maintain.
+- Examples: cleaning、landscaping、detailing、pet grooming 四类高质量 preview 样例。
+- Pricing: Starter / Local Pro / Lead Ready，价格可后续调整，但必须表达 setup + monthly model。
+- Why Not A Builder: 不用注册、不用拖拽、不用开会。
+- For Contacted Businesses: 解释为什么收到 preview、如何删除、如何激活。
+- Trust & Legal: unofficial preview、授权、隐私、退订、内容来源。
+
+官网降级内容：
+
+- HVAC quote engine 只保留为历史/技术能力，不作为主定位。
+- Lead Inbox Lite 不作为首页主卖点，只作为 Growth/Lead Ready 附加能力。
+- 不再强调“我们可以定制任何系统”。
 
 ### 4.1 Prospect Discovery
 
@@ -141,6 +180,24 @@ MVP 模板必须支持：
 - FAQ
 - footer privacy/disclaimer
 
+### 4.4.1 Preview Quality Standard
+
+Preview 质量是销售核心，不能低质量批量生成。
+
+每个 preview 发送前必须达到：
+
+- **3 秒定位清楚:** 首屏必须看出业务类型、地区、主要行动按钮。
+- **移动端优先:** 电话 CTA、表单、服务卡片、照片必须在手机上顺畅。
+- **非模板感:** 不能只是换名字和颜色；行业风格、图片布局、服务文案必须匹配行业。
+- **真实口碑可感知:** 可以展示 review themes、rating summary、trusted locally 这类合规摘要，但不复制未经授权的长 review。
+- **业务闭环可用:** test-mode form、成功状态、lead/event 保存路径必须可验证。
+- **视觉基准:** 至少达到 Dandelion 官网 R0.7 视觉系统的 80% 水平，不能像廉价 AI landing page。
+
+行业模板策略：
+
+- 宁可每个行业 3-5 个高质量 style preset，也不要 50 个平庸模板。
+- 第一批只做 cleaning、landscaping、mobile detailing、pet grooming、generic local service。
+
 模板配置字段：
 
 ```yaml
@@ -203,6 +260,13 @@ compliance:
 - 不夸大合作关系。
 - 退订或不再联系选项。
 
+第一版禁止：
+
+- 自动发送。
+- 大批量发送。
+- 使用误导标题，例如 `Your new website is ready`，除非正文第一屏清楚说明 unofficial preview。
+- 发送给 `do_not_contact`、`blocked`、`good website` prospects。
+
 ### 4.7 Purchase And Authorization
 
 客户购买前必须完成：
@@ -238,6 +302,9 @@ MVP 不做：
 - 深度 SEO 内容运营。
 - 客户无限设计修改。
 - 支付、电商、预约日历深度集成。
+- 自助 builder。
+- 客户深度定制设计流程。
+- 低价平台型 SaaS 定价竞争。
 
 ## 6. Functional Requirements
 
@@ -411,6 +478,9 @@ MVP 通过标准：
 - 能生成合规 outreach draft。
 - 至少 1 个 demo 能完成从 preview 到 active customer 的模拟流程。
 - 所有正式上线内容都有授权状态记录。
+- Dandelion 官网已调整为 AI Reputation Website Engine 产品站。
+- 至少 4 个行业 preview 样例达到 Preview Quality Standard。
+- Starter preview 包含完整轻业务闭环：电话 CTA、test-mode form、lead/event 保存、成功状态。
 
 ## 9. Open Risks
 
@@ -431,3 +501,13 @@ MVP 通过标准：
 7. Outreach draft generator.
 8. Purchase/authorization checklist.
 9. Active customer launch workflow.
+
+## 11. Pricing Strategy Placeholder
+
+定价不在本 PRD 中锁死，但产品必须支持以下商业要求：
+
+- setup fee + monthly subscription。
+- preview 免费但 noindex，且不承诺上线。
+- 价格需要比传统本地 agency 明显低，同时不能和 $10/month 工具型 AI builder 正面拼低价。
+- 价格必须解释价值差异：done-for-you activation、本地支持、高质量 preview、托管维护、业务闭环。
+- 系统必须支持后续 A/B 测试不同价格页和套餐名称。

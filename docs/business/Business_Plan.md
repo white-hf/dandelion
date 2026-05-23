@@ -105,6 +105,8 @@ Dandelion 的机会是把“已有口碑资产”自动转化成网站，而不�
 | 竞争类型 | 代表玩家 | 强项 | 弱点 | 我们的切入方式 |
 | --- | --- | --- | --- | --- |
 | 自助建站平台 | Wix, Squarespace | 便宜、模板多、托管一体化 | 客户要自己配置、写文案、找图片 | 不卖工具，卖已经生成好的 preview 和托管上线 |
+| AI/GBP 建站工具 | Goodsite, Brizy, Dorik, Simbasite, SiteBotPro, SiteDrop Pro | AI 生成、价格低、部分支持 GBP/profile 导入 | 多数仍是工具或模板站，质量同质化，客户仍需操作/判断 | 只做高质量 preview-first activation，客户不需要 builder |
+| 口碑管理平台 | Birdeye, Podium, LocalReach | reviews、listings、messages、GBP 管理强 | 对“没有网站”的小商家可能过重或太贵 | 先解决独立网站和专业形象，再逐步增加轻量口碑/lead 能力 |
 | 营销自动化平台 | GoHighLevel, HubSpot Starter | CRM、funnels、email/SMS automation | 学习成本高，普通 SMB 用不起来 | 把自动化包装成行业结果，不展示复杂 builder |
 | 家政/现场服务 SaaS | Jobber, Housecall Pro, ServiceTitan | 报价、派工、调度、发票、支付 | 对小团队可能过重，迁移和配置成本高 | 做获客层、报价请求、线索跟进，不做全套 FSM |
 | 专业行业 SaaS | Clio, Jane, SimplePractice | 法律/诊所专业工作流强 | 不专注获客网站、广告转化和品牌体验 | 做 marketing/intake layer，必要时集成而非替代 |
@@ -118,6 +120,8 @@ Dandelion 的机会是把“已有口碑资产”自动转化成网站，而不�
 - **低沟通交付:** 不是从空白需求开始，而是从 AI preview 开始。
 - **产品化模板:** 固定结构、固定套餐、固定修改范围，控制一人公司交付成本。
 - **北美本地信任:** 加拿大时区、PIPEDA/CASL 意识、北美审美和本地服务语境。
+- **高质量 preview:** 不追求模板数量，追求 preview 能让客户立即感知“这比我没有网站专业很多”。
+- **轻业务闭环:** 即使 Starter 也有电话 CTA、表单、测试提交、托管监控，不只是页面生成。
 
 ### 4.3 我们的弱势
 
@@ -175,6 +179,16 @@ Dandelion 的机会是把“已有口碑资产”自动转化成网站，而不�
 - 后续升级到行业 quote flow 和 lead inbox
 
 ## 6. 套餐与定价
+
+定价仍需市场测试。原则不是成为最便宜的 AI builder，而是成为最省事、最可信、最容易上线的本地网站激活服务。
+
+价格必须解释三组对比：
+
+- 相比 $10-$30/month AI builder：Dandelion 帮客户完成上线和维护，不要求客户自己操作工具。
+- 相比传统 agency：Dandelion 模板产品化、少沟通、AI 辅助，setup fee 明显更低。
+- 相比没有网站/社交页：Dandelion 提供独立专业网站、表单、托管和基础信任资产。
+
+官网价格页应允许后续 A/B 测试，不在代码中写死长期价格。
 
 ### 6.1 Starter Reputation Site
 
